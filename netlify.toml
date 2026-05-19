@@ -1,0 +1,46 @@
+# netlify.toml
+# Configuración del proyecto Cromosol CRM en Netlify
+
+[build]
+  # Carpeta raíz donde está el index.html del CRM
+  publish = "."
+
+  # Carpeta donde están las Netlify Functions
+  functions = "netlify/functions"
+
+# ── Variables de entorno (configurarlas en Netlify Dashboard > Site settings > Environment variables)
+# SUPABASE_URL          = https://xxxxxxxxxxxx.supabase.co
+# SUPABASE_SERVICE_KEY  = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...  (service_role key, NO la anon)
+# ANTHROPIC_API_KEY     = sk-ant-...  (para el módulo de IA)
+
+# ── Rutas de las funciones (accesibles desde el frontend como /.netlify/functions/nombre)
+[[redirects]]
+  from   = "/api/leads"
+  to     = "/.netlify/functions/get-leads"
+  status = 200
+
+[[redirects]]
+  from   = "/api/leads/create"
+  to     = "/.netlify/functions/create-lead"
+  status = 200
+
+[[redirects]]
+  from   = "/api/leads/update"
+  to     = "/.netlify/functions/update-lead"
+  status = 200
+
+# ── Headers de seguridad
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+
+# ── Headers específicos para las funciones (CORS)
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin  = "*"
+    Access-Control-Allow-Methods = "GET, POST, PATCH, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
