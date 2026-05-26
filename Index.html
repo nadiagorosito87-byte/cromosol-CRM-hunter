@@ -505,12 +505,59 @@ tr:hover td{background:#ffffff04;}
 
     <!-- HUNTERS KPI -->
     <div class="tab-panel" id="tab-hunters">
-      <div class="kpi-row" id="hunt-kpis"></div>
-      <div class="grid2">
-        <div class="panel"><div class="panel-title">Ranking de Hunters</div><div id="hunt-ranking"></div></div>
-        <div class="panel"><div class="panel-title">Leads vs Traspasos vs Altas</div><canvas id="ch-hunt-conv" height="200"></canvas></div>
+      <!-- FILTROS Y OBJETIVO -->
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px">
+        <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #dde3ec;border-radius:10px;padding:8px 14px">
+          <span style="font-size:12px;color:#64748b;font-weight:600">📅 Mes:</span>
+          <select id="hunt-filtro-mes" onchange="renderHunters()" style="background:transparent;border:none;color:#0f172a;font-size:13px;font-weight:600;outline:none;font-family:var(--sans);cursor:pointer">
+            <option value="all">Acumulado total</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #dde3ec;border-radius:10px;padding:8px 14px">
+          <span style="font-size:12px;color:#64748b;font-weight:600">🎯 Objetivo mensual:</span>
+          <input type="number" id="hunt-objetivo" value="50" min="1"
+            style="width:60px;background:transparent;border:none;color:#1d4ed8;font-size:14px;font-weight:700;outline:none;font-family:var(--sans);text-align:center"
+            onchange="renderHunters()">
+          <span style="font-size:12px;color:#64748b">leads</span>
+        </div>
+        <div id="hunt-periodo-label" style="font-size:12px;color:#94a3b8;margin-left:auto"></div>
       </div>
-      <div class="panel" style="margin-top:14px"><div class="panel-title">⚡ Alertas del equipo</div><div id="hunt-alertas"></div></div>
+
+      <!-- KPIs PRINCIPALES -->
+      <div id="hunt-kpis-nuevo" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px"></div>
+
+      <!-- EMBUDOS DE CONVERSIÓN -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px" id="hunt-embudos">
+        <!-- se renderizan dinámicamente -->
+      </div>
+
+      <!-- GRÁFICOS DE TORTA -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:18px;text-align:center">
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Leads → Prospectos</div>
+          <canvas id="ch-conv1" height="180"></canvas>
+          <div id="ch-conv1-label" style="margin-top:10px;font-size:24px;font-weight:900;color:#0891b2"></div>
+          <div id="ch-conv1-sub" style="font-size:12px;color:#94a3b8;margin-top:2px"></div>
+        </div>
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:18px;text-align:center">
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Prospectos → Clientes</div>
+          <canvas id="ch-conv2" height="180"></canvas>
+          <div id="ch-conv2-label" style="margin-top:10px;font-size:24px;font-weight:900;color:#7c3aed"></div>
+          <div id="ch-conv2-sub" style="font-size:12px;color:#94a3b8;margin-top:2px"></div>
+        </div>
+        <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:18px;text-align:center">
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Clientes → Primer Pedido</div>
+          <canvas id="ch-conv3" height="180"></canvas>
+          <div id="ch-conv3-label" style="margin-top:10px;font-size:24px;font-weight:900;color:#d97706"></div>
+          <div id="ch-conv3-sub" style="font-size:12px;color:#94a3b8;margin-top:2px"></div>
+        </div>
+      </div>
+
+      <!-- OBJETIVO vs REAL -->
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:20px;margin-bottom:16px" id="hunt-objetivo-panel"></div>
+
+      <!-- ALERTAS -->
+      <div class="panel"><div class="panel-title">⚡ Alertas del equipo</div><div id="hunt-alertas"></div></div>
     </div>
 
     <!-- GESTIÓN HUNTERS -->
@@ -1721,68 +1768,153 @@ function renderPedidos(){
 // ════════════════════════════════════════════════
 function renderHunters(){
   const l=DB.leads;
-  const ranked=DB.hunters.map(h=>{
-    const ls=l.filter(x=>x.hunterId===h.id);
-    const act=ls.filter(x=>x.estado==='Activado').length;
-    const trasp=ls.filter(x=>x.activadorId).length;
-    const cap=ls.filter(x=>x.estado==='En capacitación').length;
-    const sg=ls.filter(x=>x.estado==='Sin gestionar').length;
-    const t=ls.length?+(act/ls.length*100).toFixed(1):0;
-    return{...h,leads:ls.length,activ:act,trasp,cap,sinGest:sg,tasa:t};
-  }).sort((a,b)=>b.tasa-a.tasa);
-  const best=ranked[0];
-  document.getElementById('hunt-kpis').innerHTML=[
-    {val:DB.hunters.length,lbl:'Hunters activos',c:'#3b82f6'},
-    {val:best?.nombre.split(' ')[0]||'—',lbl:'Líder del equipo',c:best?.color||'#fbbf24'},
-    {val:(best?.tasa||0)+'%',lbl:'Mejor activación',c:'#10b981'},
-    {val:ranked.reduce((s,h)=>s+h.sinGest,0),lbl:'Sin gestionar total',c:'#e63946'},
-  ].map(k=>`<div class="kpi" style="--kc:${k.c}"><div class="kpi-val">${k.val}</div><div class="kpi-lbl">${k.lbl}</div></div>`).join('');
-  document.getElementById('hunt-ranking').innerHTML=ranked.map((h,i)=>`
-    <div class="rank-item">
-      <div class="rank-num">${['🥇','🥈','🥉'][i]||i+1}</div>
-      <div class="rank-ava" style="background:${h.color}33;color:${h.color}">${ini(h.nombre)}</div>
-      <div class="rank-info">
-        <div class="rank-name">${h.nombre}</div>
-        <div class="rank-sub">${DB.zonas.filter(z=>z.hunterId===h.id).map(z=>z.label).join(' · ')||'Sin zonas'}</div>
-      </div>
-      <div class="rank-stats">
-        <div><div class="rs-v" style="color:${h.color}">${h.tasa}%</div><div class="rs-l">Activ.</div></div>
-        <div><div class="rs-v" style="color:#06b6d4">${h.trasp}</div><div class="rs-l">Trasp.</div></div>
-        <div><div class="rs-v" style="color:#f97316">${h.cap}</div><div class="rs-l">Capac.</div></div>
-        <div><div class="rs-v" style="color:${h.sinGest>=4?'#e63946':'var(--text3)'}">${h.sinGest}</div><div class="rs-l">S/Gest.</div></div>
+
+  // ── Poblar selector de meses ──────────────────
+  const selMes=document.getElementById('hunt-filtro-mes');
+  if(selMes){
+    const meses=new Set();
+    l.forEach(x=>{
+      const f=x.fechaContacto||x.fechaAlta||'';
+      if(f) meses.add(f.slice(0,7));
+    });
+    const sorted=[...meses].sort().reverse();
+    // Reconstruir opciones
+    const curVal=selMes.value;
+    selMes.innerHTML='<option value="all">Acumulado total</option>';
+    sorted.forEach(m=>{
+      const [y,mo]=m.split('-');
+      const label=new Date(y,mo-1).toLocaleString('es-AR',{month:'long',year:'numeric'});
+      selMes.innerHTML+=`<option value="${m}">${label.charAt(0).toUpperCase()+label.slice(1)}</option>`;
+    });
+    if(curVal) selMes.value=curVal;
+  }
+
+  // ── Filtrar por mes ───────────────────────────
+  const filtroMes=selMes?.value||'all';
+  const leads=filtroMes==='all'?l:l.filter(x=>{
+    const f=x.fechaContacto||x.fechaAlta||'';
+    return f.startsWith(filtroMes);
+  });
+
+  // ── Período label ─────────────────────────────
+  const periodoEl=document.getElementById('hunt-periodo-label');
+  if(periodoEl) periodoEl.textContent=filtroMes==='all'?
+    `Total acumulado · ${leads.length} leads`:`Mostrando ${leads.length} leads del período`;
+
+  // ── Métricas base ─────────────────────────────
+  const total=leads.length;
+  const prospectos=leads.filter(x=>x.estado==='Prospecto').length;
+  const altas=leads.filter(x=>x.estado==='Alta de cliente').length;
+  const capacitacion=leads.filter(x=>x.estado==='Capacitación').length;
+  const primerPedido=leads.filter(x=>x.estado==='Primer Pedido').length;
+  const perdidos=leads.filter(x=>x.estado==='Perdido').length;
+  const clientes=altas+capacitacion+primerPedido; // clientes totales
+  const objetivo=+(document.getElementById('hunt-objetivo')?.value||50);
+
+  // Conversiones
+  const convP=total?Math.round(prospectos/total*100):0;
+  const convC=prospectos?Math.round(clientes/prospectos*100):0;
+  const convPP=clientes?Math.round(primerPedido/clientes*100):0;
+  const progObjetivo=objetivo?Math.round(total/objetivo*100):0;
+
+  // ── KPIs principales ─────────────────────────
+  const kpiEl=document.getElementById('hunt-kpis-nuevo');
+  if(kpiEl) kpiEl.innerHTML=[
+    {v:total,l:'Total leads',i:'👤',c:'#1d4ed8'},
+    {v:prospectos,l:'Prospectos',i:'🎯',c:'#0891b2'},
+    {v:clientes,l:'Clientes',i:'🏷️',c:'#7c3aed',sub:'Alta+Cap.+Pedido'},
+    {v:primerPedido,l:'Primer Pedido',i:'📦',c:'#d97706'},
+    {v:perdidos,l:'Perdidos',i:'🚫',c:'#e63946'},
+    {v:progObjetivo+'%',l:'Prog. objetivo',i:'🎯',c:progObjetivo>=100?'#059669':'#f59e0b',sub:`${total}/${objetivo} leads`},
+  ].map(k=>`
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:16px;border-top:3px solid ${k.c}">
+      <div style="font-size:20px;margin-bottom:6px">${k.i}</div>
+      <div style="font-size:28px;font-weight:900;color:${k.c};font-family:var(--display)">${k.v}</div>
+      <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-top:4px">${k.l}</div>
+      ${k.sub?`<div style="font-size:10px;color:#94a3b8;margin-top:2px">${k.sub}</div>`:''}
+    </div>`).join('');
+
+  // ── Embudos de conversión ────────────────────
+  const embudoEl=document.getElementById('hunt-embudos');
+  if(embudoEl) embudoEl.innerHTML=[
+    {title:'Leads → Prospectos',steps:[{l:'Total leads',v:total,c:'#3b82f6'},{l:'Prospectos',v:prospectos,c:'#0891b2'}],pct:convP+'%',c:'#0891b2'},
+    {title:'Prospectos → Clientes',steps:[{l:'Prospectos',v:prospectos,c:'#0891b2'},{l:'Clientes',v:clientes,c:'#7c3aed'}],pct:convC+'%',c:'#7c3aed'},
+    {title:'Clientes → Primer Pedido',steps:[{l:'Clientes',v:clientes,c:'#7c3aed'},{l:'1er Pedido',v:primerPedido,c:'#d97706'}],pct:convPP+'%',c:'#d97706'},
+  ].map(e=>`
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:18px">
+      <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px">${e.title}</div>
+      ${e.steps.map((s,i)=>`
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:${i<e.steps.length-1?'8px':'0'}">
+          <div style="width:10px;height:10px;border-radius:50%;background:${s.c};flex-shrink:0"></div>
+          <div style="flex:1;font-size:13px;color:#475569">${s.l}</div>
+          <div style="font-size:16px;font-weight:700;color:${s.c}">${s.v}</div>
+        </div>
+        ${i<e.steps.length-1?`<div style="margin:0 0 8px 20px;height:1px;background:#f1f5f9"></div>`:''}
+      `).join('')}
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:11px;color:#94a3b8">Conversión</span>
+        <span style="font-size:22px;font-weight:900;color:${e.c};font-family:var(--display)">${e.pct}</span>
       </div>
     </div>`).join('');
-  dc('ch-hunt-conv');
-  charts['ch-hunt-conv']=new Chart(document.getElementById('ch-hunt-conv'),{
-    type:'bar',
-    data:{labels:ranked.map(h=>h.nombre.split(' ')[0]),datasets:[
-      {label:'Leads',data:ranked.map(h=>h.leads),backgroundColor:ranked.map(h=>h.color+'44'),borderRadius:5},
-      {label:'Traspasos',data:ranked.map(h=>h.trasp),backgroundColor:ranked.map(h=>'#06b6d488'),borderRadius:5},
-      {label:'Activos',data:ranked.map(h=>h.activ),backgroundColor:ranked.map(h=>'#10b98188'),borderRadius:5},
-    ]},
-    options:{...CHO}
-  });
-  const al=[];
-  ranked.forEach(h=>{
-    if(h.sinGest>=4) al.push({c:'al-red',msg:`<strong>${h.nombre}</strong> tiene <strong>${h.sinGest}</strong> leads sin gestionar`});
-    if(h.tasa<10&&h.leads>=5) al.push({c:'al-yellow',msg:`<strong>${h.nombre}</strong> tiene tasa de activación baja: <strong>${h.tasa}%</strong>`});
-    if(h.trasp===0&&h.leads>=5) al.push({c:'al-blue',msg:`<strong>${h.nombre}</strong> aún no ha traspasado leads a ningún Activador`});
-  });
-  if(!al.length) al.push({c:'al-green',msg:'✅ Todo en orden — Equipo funcionando correctamente'});
-  document.getElementById('hunt-alertas').innerHTML=al.map(a=>`<div class="alert-card ${a.c}">${a.msg}</div>`).join('');
-}
 
-// ════════════════════════════════════════════════
-// IMPORT EXCEL
-// ════════════════════════════════════════════════
-// Wire up file input once after DOM ready
-function initImportInput(){
-  const inp=document.getElementById('import-file');
-  if(inp._wired) return;
-  inp._wired=true;
-  inp.addEventListener('change',function(){
-    if(this.files&&this.files[0]) procesarArchivoImport(this.files[0]);
-  });
+  // ── Gráficos de torta ────────────────────────
+  function drawPie(id,labelId,subId,val,total2,color,label,sub){
+    const canvas=document.getElementById(id);if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    const pct=total2?Math.round(val/total2*100):0;
+    if(window['chart_'+id]) window['chart_'+id].destroy();
+    window['chart_'+id]=new Chart(ctx,{
+      type:'doughnut',
+      data:{datasets:[{data:[val,Math.max(0,total2-val)],backgroundColor:[color,'#f1f5f9'],borderWidth:0,borderRadius:4}]},
+      options:{cutout:'72%',animation:{duration:600},plugins:{legend:{display:false},tooltip:{enabled:false}}}
+    });
+    const lEl=document.getElementById(labelId);
+    const sEl=document.getElementById(subId);
+    if(lEl) lEl.textContent=pct+'%';
+    if(sEl) sEl.textContent=sub;
+  }
+  drawPie('ch-conv1','ch-conv1-label','ch-conv1-sub',prospectos,total,'#0891b2','',''+prospectos+' de '+total);
+  drawPie('ch-conv2','ch-conv2-label','ch-conv2-sub',clientes,Math.max(prospectos,1),'#7c3aed','',''+clientes+' de '+prospectos);
+  drawPie('ch-conv3','ch-conv3-label','ch-conv3-sub',primerPedido,Math.max(clientes,1),'#d97706','',''+primerPedido+' de '+clientes);
+
+  // ── Panel objetivo ───────────────────────────
+  const objEl=document.getElementById('hunt-objetivo-panel');
+  if(objEl){
+    const barW=Math.min(progObjetivo,100);
+    const colorBar=progObjetivo>=100?'#059669':progObjetivo>=75?'#d97706':'#1d4ed8';
+    objEl.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#0f172a">🎯 Progreso vs Objetivo mensual</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px">${filtroMes==='all'?'Acumulado total':selMes?.options[selMes.selectedIndex]?.text||filtroMes}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:28px;font-weight:900;color:${colorBar};font-family:var(--display)">${progObjetivo}%</div>
+          <div style="font-size:12px;color:#94a3b8">${total} / ${objetivo} leads</div>
+        </div>
+      </div>
+      <div style="height:12px;background:#f1f5f9;border-radius:6px;overflow:hidden">
+        <div style="height:100%;width:${barW}%;background:${colorBar};border-radius:6px;transition:width .6s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:8px">
+        <span style="font-size:11px;color:#94a3b8">0</span>
+        <span style="font-size:11px;color:#94a3b8">Objetivo: ${objetivo} leads</span>
+      </div>`;
+  }
+
+  // ── Alertas ───────────────────────────────────
+  const h=DB.hunters[0];
+  const alertas=[];
+  const sinG=leads.filter(x=>x.estado==='Sin gestionar').length;
+  if(sinG>5) alertas.push({i:'⚠️',t:`${sinG} leads sin gestionar — requieren contacto urgente`,c:'#e63946'});
+  if(convP<20&&total>10) alertas.push({i:'📉',t:`Conversión leads→prospectos baja (${convP}%) — revisar criterios`,c:'#f59e0b'});
+  if(progObjetivo>=100) alertas.push({i:'🏆',t:`¡Objetivo del mes cumplido! ${total}/${objetivo} leads`,c:'#059669'});
+  if(progObjetivo<50&&filtroMes!=='all') alertas.push({i:'🎯',t:`Faltan ${objetivo-total} leads para cumplir el objetivo`,c:'#1d4ed8'});
+  const alertEl=document.getElementById('hunt-alertas');
+  if(alertEl) alertEl.innerHTML=alertas.length?alertas.map(a=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-left:3px solid ${a.c};background:${a.c}08;border-radius:0 8px 8px 0;margin-bottom:8px;font-size:13px;color:#0f172a">
+      <span>${a.i}</span><span>${a.t}</span>
+    </div>`).join(''):'<div style="color:#94a3b8;font-size:13px;padding:12px">Sin alertas activas ✅</div>';
 }
 function triggerImportFile(){
   initImportInput();
