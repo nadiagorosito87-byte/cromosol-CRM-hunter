@@ -259,70 +259,6 @@ tr:hover td{background:#ffffff04;}
 .traspaso-banner .tb-ico{font-size:22px;}
 .traspaso-banner .tb-txt{font-size:13px;font-weight:600;color:var(--teal);}
 .traspaso-banner .tb-sub{font-size:11px;color:var(--text3);}
-
-/* ALTA DE CLIENTE */
-.alta-layout{display:grid;grid-template-columns:1fr 380px;gap:16px;align-items:start;}
-@media(max-width:900px){.alta-layout{grid-template-columns:1fr;}}
-.alta-form{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-.alta-form-hdr{background:linear-gradient(135deg,#10b98118,#06b6d410);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;gap:12px;}
-.alta-form-hdr-ico{width:40px;height:40px;border-radius:10px;background:#10b98122;display:flex;align-items:center;justify-content:center;font-size:20px;}
-.alta-form-body{padding:20px;}
-.alta-section{margin-bottom:20px;}
-.alta-section-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
-.alta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.alta-grid.three{grid-template-columns:1fr 1fr 1fr;}
-.af{display:flex;flex-direction:column;gap:4px;}
-.af.full{grid-column:1/-1;}
-.af label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;}
-.af label .req{color:var(--accent);}
-.af input,.af select,.af textarea{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-size:13px;font-family:var(--sans);outline:none;transition:border-color .15s;}
-.af input:focus,.af select:focus,.af textarea:focus{border-color:var(--green);}
-.af select option{background:var(--card2);}
-.af input::placeholder,.af textarea::placeholder{color:var(--text3);}
-.seg-btn-group{display:flex;flex-wrap:wrap;gap:6px;}
-.seg-btn{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--card2);color:var(--text2);transition:all .15s;user-select:none;}
-.seg-btn:hover{border-color:var(--border2);color:var(--text);}
-.seg-btn.sel{background:#10b98122;border-color:#10b98166;color:#10b981;}
-.seg-btn.sel-tipo{background:#3b82f622;border-color:#3b82f666;color:#3b82f6;}
-.seg-btn.sel-venta{background:#8b5cf622;border-color:#8b5cf666;color:#8b5cf6;}
-.seg-btn.sel-vol{background:#fbbf2422;border-color:#fbbf2466;color:#fbbf24;}
-.seg-btn.sel-pot{background:#f9731622;border-color:#f9731666;color:#f97316;}
-.seg-btn.sel-tam{background:#06b6d422;border-color:#06b6d466;color:#06b6d4;}
-.wa-panel{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;position:sticky;top:0;}
-.wa-panel-hdr{background:linear-gradient(135deg,#25d36618,#128c7e18);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;gap:10px;}
-.wa-icon{width:36px;height:36px;border-radius:50%;background:#25d36622;display:flex;align-items:center;justify-content:center;font-size:18px;}
-.wa-title{font-size:13px;font-weight:700;}
-.wa-sub{font-size:10px;color:var(--text3);}
-.wa-live{width:7px;height:7px;border-radius:50%;background:#25d366;animation:pulse 2s infinite;margin-left:auto;}
-.wa-msg-wrap{padding:14px;background:#0a0f0e;min-height:300px;max-height:500px;overflow-y:auto;}
-.wa-msg-bubble{background:#1f2e25;border-radius:2px 10px 10px 10px;padding:12px 14px;font-size:12px;line-height:1.7;color:#e8f5e9;white-space:pre-wrap;word-break:break-word;border-left:3px solid #25d366;font-family:'JetBrains Mono',monospace;}
-.wa-msg-bubble .wa-empty{color:#4a6350;font-style:italic;font-size:11px;}
-.wa-actions{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;}
-.wa-copy-btn{flex:1;background:#25d366;border:none;border-radius:8px;padding:10px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .15s;}
-.wa-copy-btn:hover{opacity:.9;}
-.wa-copy-btn.copied{background:#10b981;}
-.wa-reset-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .15s;}
-.wa-reset-btn:hover{border-color:var(--border2);color:var(--text);}
-.marcas-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;min-height:24px;}
-.marca-tag{background:#3b82f622;border:1px solid #3b82f644;color:#3b82f6;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;}
-.marca-tag button{background:transparent;border:none;color:#3b82f688;cursor:pointer;font-size:12px;padding:0;line-height:1;}
-.marca-tag button:hover{color:#3b82f6;}
-/* WA PARSE */
-.wa-parse-area{background:#0a0f0e;border:1px solid #25d36633;border-radius:10px;padding:12px 14px;}
-.wa-parse-area textarea{width:100%;background:transparent;border:none;outline:none;color:#e8f5e9;font-size:12px;font-family:var(--mono);resize:vertical;min-height:100px;line-height:1.6;}
-.wa-parse-area textarea::placeholder{color:#4a6350;}
-/* CONFIG */
-.config-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px;}
-.config-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
-.config-row{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
-.config-row label{font-size:11px;font-weight:600;color:var(--text2);width:140px;flex-shrink:0;}
-.config-row input{flex:1;min-width:200px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 11px;color:var(--text);font-size:12px;font-family:var(--mono);outline:none;transition:border-color .15s;}
-.config-row input:focus{border-color:#06b6d4;}
-.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.status-dot.ok{background:#10b981;}.status-dot.err{background:#e63946;}.status-dot.idle{background:var(--text3);}
-.sync-banner{background:#10b98110;border:1px solid #10b98133;border-radius:8px;padding:10px 14px;font-size:12px;display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-.sync-banner.err{background:#e6394610;border-color:#e6394633;}
-.sync-banner.warn{background:#fbbf2410;border-color:#fbbf2433;}
 </style>
 </head>
 <body>
@@ -344,9 +280,6 @@ tr:hover td{background:#ffffff04;}
   <div class="nav-item" onclick="showTab('pipeline',this)"><span class="nav-ico">🎯</span><span>Pipeline</span></div>
 
   <div class="sb-sec">Flujo Hunter</div>
-  <div class="nav-item" onclick="showTab('alta',this)"><span class="nav-ico">📋</span><span>Alta de Cliente</span><span class="nav-badge nb-green" id="nb-alta">NEW</span></div>
-  <div class="nav-item" onclick="showTab('entrantes',this)"><span class="nav-ico">📨</span><span>Leads Entrantes</span><span class="nav-badge nb-red" id="nb-entrantes">0</span></div>
-  <div class="nav-item" onclick="showTab('config',this)"><span class="nav-ico">⚙️</span><span>Conexión API</span></div>
   <div class="nav-item" onclick="showTab('traspaso',this)"><span class="nav-ico">🔄</span><span>Traspaso</span><span class="nav-badge nb-teal" id="nb-traspaso" style="background:var(--teal);color:#fff">0</span></div>
   <div class="nav-item" onclick="showTab('activadores',this)"><span class="nav-ico">⚡</span><span>Activadores</span></div>
   <div class="nav-item" onclick="showTab('zonas',this)"><span class="nav-ico">📍</span><span>Mis Zonas</span></div>
@@ -359,7 +292,7 @@ tr:hover td{background:#ffffff04;}
   <div class="sb-sec">Equipo</div>
   <div class="nav-item" onclick="showTab('hunters',this)"><span class="nav-ico">🏆</span><span>Hunters KPI</span></div>
   <div class="nav-item" onclick="showTab('gestion-hunters',this)"><span class="nav-ico">👤</span><span>Gestión Hunters</span></div>
-  <div class="nav-item" onclick="showTab('ia',this)"><span class="nav-ico">🤖</span><span>IA Asistente</span></div>
+
 
   <div class="sb-bottom">
     <div class="user-pill">
@@ -389,6 +322,9 @@ tr:hover td{background:#ffffff04;}
     <!-- DASHBOARD -->
     <div class="tab-panel active" id="tab-dashboard">
       <div class="kpi-row" id="dash-kpis"></div>
+
+      <!-- CONVERSIONES -->
+      <div id="dash-conversiones" style="margin-bottom:16px"></div>
 
       <!-- IMPORT CARD DESTACADO -->
       <div id="dash-import-card" style="background:linear-gradient(135deg,#06b6d415,#3b82f610);border:1px solid #06b6d440;border-radius:14px;padding:18px 22px;margin-bottom:14px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;cursor:pointer;transition:border-color .15s" onclick="abrirModalImport()" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='#06b6d440'">
@@ -616,175 +552,6 @@ tr:hover td{background:#ffffff04;}
       </div>
     </div>
 
-
-    <!-- LEADS ENTRANTES -->
-    <div class="tab-panel" id="tab-entrantes">
-      <div class="grid2" style="margin-bottom:14px">
-        <div class="panel">
-          <div class="panel-title">💬 Parsear mensaje de WhatsApp con IA</div>
-          <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Pegá el mensaje que llegó por WhatsApp desde la campaña. La IA extrae los datos automáticamente.</div>
-          <div class="wa-parse-area">
-            <textarea id="wa-raw-msg" placeholder="Pegá acá el mensaje de WhatsApp...&#10;&#10;Ej:&#10;Hola! Vi el anuncio de Cromosol.&#10;Soy Juan García de Taller El Rayo&#10;CUIT: 20-12345678-9&#10;Zona: CABA Norte&#10;Tel: 11 5555-1234"></textarea>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:10px">
-            <button onclick="parsearWAconIA()" style="flex:1;background:#25d366;border:none;border-radius:8px;padding:9px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:6px">🤖 Parsear con IA</button>
-            <button onclick="parsearWAlocal()" style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">⚡ Parseo rápido</button>
-          </div>
-          <div id="wa-parse-result" style="margin-top:12px"></div>
-        </div>
-        <div class="panel">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <div class="panel-title" style="margin-bottom:0">☁️ Leads desde Supabase</div>
-            <div style="display:flex;gap:7px;align-items:center">
-              <div id="sync-status-dot" class="status-dot idle"></div>
-              <span id="sync-status-txt" style="font-size:10px;color:var(--text3)">Sin sincronizar</span>
-              <button onclick="sincronizarSupabase()" style="background:var(--teal);border:none;border-radius:7px;padding:5px 12px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)">🔄 Sync</button>
-            </div>
-          </div>
-          <div id="sync-banner-wrap"></div>
-          <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Leads nuevos que llegaron desde el formulario de landing o la API de tus campañas.</div>
-          <div id="supabase-leads-list" style="max-height:320px;overflow-y:auto">
-            <div style="text-align:center;padding:24px;color:var(--text3);font-size:12px">
-              Configurá la URL de Netlify en <strong>⚙️ Conexión API</strong> y hacé clic en Sync para ver los leads entrantes.
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="panel">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div class="panel-title" style="margin-bottom:0">📥 Cola de revisión — Leads sin gestionar</div>
-          <span id="entrantes-count" style="font-size:11px;color:var(--text3)">0 leads</span>
-        </div>
-        <div id="entrantes-lista"></div>
-      </div>
-    </div>
-
-    <!-- ALTA DE CLIENTE -->
-    <div class="tab-panel" id="tab-alta">
-      <div class="alta-layout">
-        <div class="alta-form">
-          <div class="alta-form-hdr">
-            <div class="alta-form-hdr-ico">📋</div>
-            <div>
-              <div style="font-family:var(--display);font-size:15px;font-weight:900">Solicitud de Alta de Cliente</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:2px">Cromosol / BBA — Completar todos los campos antes de enviar</div>
-            </div>
-          </div>
-          <div class="alta-form-body">
-            <div class="alta-section">
-              <div class="alta-section-title">👤 Datos del Cliente</div>
-              <div class="alta-grid">
-                <div class="af full"><label>Nombre / Razón Social <span class="req">*</span></label><input id="af-nombre" placeholder="Ej: Taller El Rayo SRL" oninput="updateWA()"/></div>
-                <div class="af"><label>CUIT <span class="req">*</span></label><input id="af-cuit" placeholder="20-12345678-9" oninput="fmtCuitInput(this);updateWA()"/></div>
-                <div class="af"><label>Zona <span class="req">*</span></label><select id="af-zona" onchange="updateWA()"><option value="">Seleccionar...</option></select></div>
-                <div class="af"><label>Teléfono</label><input id="af-tel" placeholder="+54 9 11..." oninput="updateWA()"/></div>
-                <div class="af"><label>Mail</label><input id="af-mail" type="email" placeholder="contacto@..." oninput="updateWA()"/></div>
-                <div class="af full"><label>Dirección de entrega</label><input id="af-dir-entrega" placeholder="Calle, número, localidad..." oninput="updateWA()"/></div>
-                <div class="af full"><label>Dirección de facturación</label><input id="af-dir-factu" placeholder="Igual a entrega o diferente..." oninput="updateWA()"/></div>
-                <div class="af"><label>Hunter <span class="req">*</span></label><select id="af-hunter-sel" onchange="updateWA()"><option value="">Seleccionar...</option></select></div>
-                <div class="af"><label>Fecha de alta</label><input id="af-fecha" type="date" oninput="updateWA()"/></div>
-              </div>
-            </div>
-            <div class="alta-section">
-              <div class="alta-section-title">📊 Segmentación del Cliente</div>
-              <div style="margin-bottom:14px">
-                <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Tipo de Comercio <span style="color:var(--accent)">*</span></div>
-                <div class="seg-btn-group" id="seg-tipo">
-                  <div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Repuestos</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Autopartes</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Taller mecánico</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Taller chapa y pintura</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Chapero</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Lubricentro</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Gomería</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Casa de Línea</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Pesados</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Accesorios</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Iluminación</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Frenos</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Suspensión</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Inyección</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Embrague</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Enc. y Electricidad</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Sistema Térmico</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Parabrisas</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Cerrajería</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">EPARTS</div><div class="seg-btn" onclick="selSeg(this,'tipo','sel-tipo')">Otro rubro</div>
-                </div>
-              </div>
-              <div style="margin-bottom:14px">
-                <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Tipo de Venta <span style="color:var(--accent)">*</span> <span style="font-size:9px;color:var(--text3);text-transform:none;letter-spacing:0">(múltiple)</span></div>
-                <div class="seg-btn-group" id="seg-venta">
-                  <div class="seg-btn" onclick="selSegMulti(this,'sel-venta')">Mostrador</div><div class="seg-btn" onclick="selSegMulti(this,'sel-venta')">A talleres</div><div class="seg-btn" onclick="selSegMulti(this,'sel-venta')">Distribuidor</div><div class="seg-btn" onclick="selSegMulti(this,'sel-venta')">Reventa</div><div class="seg-btn" onclick="selSegMulti(this,'sel-venta')">Ecommerce</div><div class="seg-btn" onclick="selSegMulti(this,'sel-venta')">Colocación</div><div class="seg-btn" onclick="selSegMulti(this,'sel-venta')">Cía. de Seguros</div><div class="seg-btn" onclick="selSegMulti(this,'sel-venta')">Consumo Propio</div>
-                </div>
-              </div>
-              <div style="margin-bottom:14px">
-                <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Marcas que trabaja</div>
-                <div style="display:flex;gap:6px">
-                  <input id="af-marca-inp" placeholder="Escribí una marca y Enter..." style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 11px;color:var(--text);font-size:12px;font-family:var(--sans);outline:none" onkeydown="if(event.key==='Enter'){event.preventDefault();addMarca()}" oninput="updateWA()"/>
-                  <button onclick="addMarca()" style="background:var(--blue);border:none;border-radius:8px;padding:7px 14px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">+ Agregar</button>
-                </div>
-                <div class="marcas-tags" id="marcas-tags"></div>
-              </div>
-              <div class="alta-grid three" style="margin-bottom:14px">
-                <div>
-                  <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Volumen <span style="color:var(--accent)">*</span></div>
-                  <div class="seg-btn-group" id="seg-vol" style="flex-direction:column;gap:4px">
-                    <div class="seg-btn" onclick="selSeg(this,'vol','sel-vol')" style="border-radius:7px;text-align:left">A — Más de $3.000.000</div><div class="seg-btn" onclick="selSeg(this,'vol','sel-vol')" style="border-radius:7px;text-align:left">B — $1.000.000 a $2.999.999</div><div class="seg-btn" onclick="selSeg(this,'vol','sel-vol')" style="border-radius:7px;text-align:left">C — $500.000 a $999.000</div><div class="seg-btn" onclick="selSeg(this,'vol','sel-vol')" style="border-radius:7px;text-align:left">D — $200.000 a $499.000</div><div class="seg-btn" onclick="selSeg(this,'vol','sel-vol')" style="border-radius:7px;text-align:left">E — $10.000 a $199.000</div><div class="seg-btn" onclick="selSeg(this,'vol','sel-vol')" style="border-radius:7px;text-align:left">F — Mínimo movimiento</div><div class="seg-btn" onclick="selSeg(this,'vol','sel-vol')" style="border-radius:7px;text-align:left">G — Sin movimiento</div>
-                  </div>
-                </div>
-                <div>
-                  <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Potencial <span style="color:var(--accent)">*</span></div>
-                  <div class="seg-btn-group" id="seg-pot" style="flex-direction:column;gap:4px">
-                    <div class="seg-btn" onclick="selSeg(this,'pot','sel-pot')" style="border-radius:7px;text-align:left">Alto (8-10)</div><div class="seg-btn" onclick="selSeg(this,'pot','sel-pot')" style="border-radius:7px;text-align:left">Medio alto (6-7)</div><div class="seg-btn" onclick="selSeg(this,'pot','sel-pot')" style="border-radius:7px;text-align:left">Medio bajo (4-5)</div><div class="seg-btn" onclick="selSeg(this,'pot','sel-pot')" style="border-radius:7px;text-align:left">Bajo (1-3)</div>
-                  </div>
-                </div>
-                <div>
-                  <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px">Tamaño</div>
-                  <div class="seg-btn-group" id="seg-tam" style="flex-direction:column;gap:4px">
-                    <div class="seg-btn" onclick="selSeg(this,'tam','sel-tam')" style="border-radius:7px;text-align:left">Solo dueño</div><div class="seg-btn" onclick="selSeg(this,'tam','sel-tam')" style="border-radius:7px;text-align:left">Familiar</div><div class="seg-btn" onclick="selSeg(this,'tam','sel-tam')" style="border-radius:7px;text-align:left">C — 1 a 2 empleados</div><div class="seg-btn" onclick="selSeg(this,'tam','sel-tam')" style="border-radius:7px;text-align:left">B — 3 a 5 empleados</div><div class="seg-btn" onclick="selSeg(this,'tam','sel-tam')" style="border-radius:7px;text-align:left">A — más de 6 empleados</div>
-                  </div>
-                </div>
-              </div>
-              <div class="alta-grid">
-                <div class="af"><label>Proyección</label><input id="af-proyeccion" placeholder="Crecimiento estimado..." oninput="updateWA()"/></div>
-                <div class="af full"><label>Observaciones del Hunter</label><textarea id="af-obs-alta" rows="3" placeholder="Contexto, necesidades, oportunidad detectada..." oninput="updateWA()"></textarea></div>
-              </div>
-            </div>
-            <div style="display:flex;gap:10px;padding-top:4px">
-              <button onclick="guardarAltaEnCRM()" style="flex:1;background:var(--green);border:none;border-radius:9px;padding:11px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--sans)">💾 Guardar en CRM</button>
-              <button onclick="limpiarFormAlta()" style="background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px 16px;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)">🗑 Limpiar</button>
-            </div>
-          </div>
-        </div>
-        <div class="wa-panel">
-          <div class="wa-panel-hdr">
-            <div class="wa-icon">💬</div>
-            <div><div class="wa-title">Vista previa WhatsApp</div><div class="wa-sub">Se genera en tiempo real</div></div>
-            <div class="wa-live"></div>
-          </div>
-          <div class="wa-msg-wrap">
-            <div class="wa-msg-bubble" id="wa-preview"><span class="wa-empty">Completá el formulario para ver el mensaje generado aquí...</span></div>
-          </div>
-          <div style="padding:8px 14px 0;font-size:10px;color:var(--text3);text-align:center">El mensaje se actualiza automáticamente</div>
-          <div class="wa-actions">
-            <button class="wa-copy-btn" id="wa-copy-btn" onclick="copiarWA()">📋 Copiar mensaje</button>
-            <button class="wa-reset-btn" onclick="limpiarFormAlta()">↺</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CONEXIÓN API -->
-    <div class="tab-panel" id="tab-config">
-      <div style="font-family:var(--display);font-size:15px;font-weight:900;margin-bottom:4px">⚙️ Conexión API — Netlify + Supabase</div>
-      <div style="font-size:12px;color:var(--text3);margin-bottom:18px">Configurá las credenciales para sincronizar el CRM con el backend en Netlify y la base de datos en Supabase.</div>
-      <div class="config-section">
-        <div class="config-title">🚀 Netlify Functions URL</div>
-        <div class="config-row"><label>URL base del sitio</label><input id="cfg-netlify-url" type="text" placeholder="https://tu-sitio.netlify.app" oninput="guardarConfig()"/></div>
-        <div class="config-row"><label>API Key (CRM_API_KEY)</label><input id="cfg-api-key" type="password" placeholder="Tu clave secreta..." oninput="guardarConfig()"/></div>
-        <div style="display:flex;gap:8px;margin-top:4px">
-          <button onclick="testConexion()" style="background:var(--teal);border:none;border-radius:8px;padding:8px 18px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">🧪 Probar conexión</button>
-          <div id="test-result" style="font-size:12px;display:flex;align-items:center;gap:6px;color:var(--text3)"></div>
-        </div>
-      </div>
-      <div class="config-section">
-        <div class="config-title">📋 Cómo deployar en Netlify</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;gap:12px;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:#3b82f622;color:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0">1</div><div><div style="font-size:12px;font-weight:600;margin-bottom:2px">Renombrá <code>cromosol-crm.html</code> a <code>index.html</code> y subilo junto con la carpeta <code>netlify/functions/</code></div><div style="font-size:11px;color:var(--text3)">Arrastrá la carpeta entera a netlify.com → Deploy manually</div></div></div><div style="display:flex;gap:12px;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:#10b98122;color:#10b981;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0">2</div><div><div style="font-size:12px;font-weight:600;margin-bottom:2px">Agregar variables de entorno en Netlify</div><div style="font-size:11px;color:var(--text3)">Site settings → Environment variables → SUPABASE_URL · SUPABASE_SERVICE_KEY · CRM_API_KEY</div></div></div><div style="display:flex;gap:12px;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:#fbbf2422;color:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0">3</div><div><div style="font-size:12px;font-weight:600;margin-bottom:2px">Ejecutar el schema SQL en Supabase</div><div style="font-size:11px;color:var(--text3)">Dashboard → SQL Editor → pegás el contenido de supabase-schema.sql</div></div></div><div style="display:flex;gap:12px;align-items:flex-start"><div style="width:24px;height:24px;border-radius:50%;background:#8b5cf622;color:#8b5cf6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0">4</div><div><div style="font-size:12px;font-weight:600;margin-bottom:2px">Pegá la URL de tu Netlify acá arriba y hacé Probar conexión</div><div style="font-size:11px;color:var(--text3)">El CRM sincronizará los leads automáticamente</div></div></div>
-        </div>
-      </div>
-      <div class="config-section">
-        <div class="config-title">🔗 Endpoints disponibles</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <div style="background:var(--card2);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center"><span style="background:#10b98122;color:#10b981;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:var(--mono)">POST</span><span style="font-family:var(--mono);font-size:11px;color:var(--teal)">/api/create-lead</span><span style="font-size:11px;color:var(--text3);flex:1">Crea un lead desde landing o formulario externo</span></div>
-          <div style="background:var(--card2);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center"><span style="background:#3b82f622;color:#3b82f6;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:var(--mono)">GET</span><span style="font-family:var(--mono);font-size:11px;color:var(--teal)">/api/get-leads?nuevos=1</span><span style="font-size:11px;color:var(--text3);flex:1">Trae leads sin gestionar para el CRM</span></div>
-          <div style="background:var(--card2);border-radius:8px;padding:10px 14px;display:flex;gap:12px;align-items:center"><span style="background:#fbbf2422;color:#fbbf24;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:var(--mono)">PATCH</span><span style="font-family:var(--mono);font-size:11px;color:var(--teal)">/api/update-lead</span><span style="font-size:11px;color:var(--text3);flex:1">Actualiza estado, hunter, segmentación</span></div>
-        </div>
-      </div>
-    </div>
-
   </div><!-- /content -->
 </div><!-- /main -->
 </div><!-- /app -->
@@ -904,7 +671,16 @@ tr:hover td{background:#ffffff04;}
     </div>
     <div id="import-preview" style="margin-top:12px"></div>
     <div id="import-hunter-assign" style="margin-top:12px;display:none">
-      <div class="fg"><label>Asignar todos estos leads al Hunter:</label><select id="import-hunter-sel" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-size:13px;font-family:var(--sans);outline:none;width:100%;margin-top:4px"></select></div>
+      <div class="fg" style="margin-bottom:10px">
+        <label>Asignar todos estos leads al Hunter:</label>
+        <select id="import-hunter-sel" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-size:13px;font-family:var(--sans);outline:none;width:100%;margin-top:4px"></select>
+      </div>
+      <div class="fg">
+        <label>📣 Nombre de la campaña <span style="color:#e63946">*</span></label>
+        <input type="text" id="import-campana-val" placeholder="Ej: Meta Ads Mayo 2026, Google Ads, Base propia..."
+          style="background:var(--card);border:2px solid var(--teal);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:var(--sans);outline:none;width:100%;margin-top:4px;font-weight:600">
+        <div style="font-size:11px;color:var(--text3);margin-top:4px">Este nombre aparece en el apartado Campañas para identificar el origen de estos leads.</div>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="cerrarModalImport()">Cancelar</button>
@@ -1074,356 +850,7 @@ async function loadDB(){
       sb.from('activadores').select('*').order('nombre'),
       sb.from('leads').select('*').order('created_at',{ascending:false}),
     ]);
-    if(!rH.data||rH.data.length===0){await seedSupabase();return 
-// ════════════════════════════════════════════════
-// ALTA DE CLIENTE
-// ════════════════════════════════════════════════
-const altaSeg={tipo:'',venta:[],vol:'',pot:'',tam:''};
-const altaMarcas=[];
-
-function initAltaForm(){
-  const zs=document.getElementById('af-zona');
-  if(zs){zs.innerHTML='<option value="">Seleccionar...</option>'+DB.zonas.map(z=>`<option value="${z.label}">${z.label}</option>`).join('');}
-  const hs=document.getElementById('af-hunter-sel');
-  if(hs){hs.innerHTML='<option value="">Seleccionar...</option>'+DB.hunters.map(h=>`<option value="${h.nombre}">${h.nombre}</option>`).join('');}
-  const fd=document.getElementById('af-fecha');
-  if(fd&&!fd.value) fd.value=hoy();
-  updateWA();
-}
-function selSeg(el,field,cls){
-  el.parentElement.querySelectorAll('.seg-btn').forEach(b=>{b.classList.remove('sel',cls);});
-  el.classList.add('sel',cls);
-  altaSeg[field]=el.textContent.trim();
-  updateWA();
-}
-function selSegMulti(el,cls){
-  el.classList.toggle('sel');el.classList.toggle(cls);
-  altaSeg.venta=Array.from(el.parentElement.querySelectorAll('.sel')).map(b=>b.textContent.trim());
-  updateWA();
-}
-function addMarca(){
-  const inp=document.getElementById('af-marca-inp');
-  const val=inp?.value.trim();
-  if(!val) return;
-  if(!altaMarcas.includes(val)) altaMarcas.push(val);
-  inp.value='';
-  renderMarcasTags();updateWA();
-}
-function removeMarca(m){
-  const i=altaMarcas.indexOf(m);
-  if(i>-1) altaMarcas.splice(i,1);
-  renderMarcasTags();updateWA();
-}
-function renderMarcasTags(){
-  const el=document.getElementById('marcas-tags');
-  if(el) el.innerHTML=altaMarcas.map(m=>`<div class="marca-tag">${m}<button onclick="removeMarca('${m}')">✕</button></div>`).join('');
-}
-function fmtCuitInput(el){
-  let v=el.value.replace(/[^0-9]/g,'');
-  if(v.length>2) v=v.slice(0,2)+'-'+v.slice(2);
-  if(v.length>11) v=v.slice(0,11)+'-'+v.slice(11);
-  el.value=v.slice(0,13);
-}
-function getAltaData(){
-  return{
-    nombre:document.getElementById('af-nombre')?.value.trim()||'',
-    cuit:document.getElementById('af-cuit')?.value.trim()||'',
-    zona:document.getElementById('af-zona')?.value||'',
-    tel:document.getElementById('af-tel')?.value.trim()||'',
-    mail:document.getElementById('af-mail')?.value.trim()||'',
-    dirEntrega:document.getElementById('af-dir-entrega')?.value.trim()||'',
-    dirFactu:document.getElementById('af-dir-factu')?.value.trim()||'',
-    hunter:document.getElementById('af-hunter-sel')?.value||'',
-    fecha:document.getElementById('af-fecha')?.value||'',
-    tipo:altaSeg.tipo,venta:altaSeg.venta,marcas:[...altaMarcas],
-    vol:altaSeg.vol,pot:altaSeg.pot,tam:altaSeg.tam,
-    proyeccion:document.getElementById('af-proyeccion')?.value.trim()||'',
-    obs:document.getElementById('af-obs-alta')?.value.trim()||'',
-  };
-}
-function updateWA(){
-  const d=getAltaData();
-  const tiene=v=>v&&(Array.isArray(v)?v.length>0:v.length>0);
-  const linea=(ico,label,val)=>tiene(val)?`${ico} *${label}:* ${Array.isArray(val)?val.join(', '):val}\n`:'';
-  if(!tiene(d.nombre)&&!tiene(d.cuit)){
-    const el=document.getElementById('wa-preview');
-    if(el) el.innerHTML='<span class="wa-empty">Completá el formulario para ver el mensaje generado aquí...</span>';
-    return;
-  }
-  let msg=`🔔 *SOLICITUD DE ALTA DE CLIENTE — CROMOSOL / BBA*\n━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-  msg+=`👤 *DATOS DEL CLIENTE*\n`;
-  msg+=linea('🏢','Razón Social',d.nombre);msg+=linea('🔢','CUIT',d.cuit);msg+=linea('📍','Zona',d.zona);
-  msg+=linea('📞','Teléfono',d.tel);msg+=linea('📧','Mail',d.mail);msg+=linea('🚚','Dir. Entrega',d.dirEntrega);
-  msg+=linea('🧾','Dir. Facturación',d.dirFactu||(d.dirEntrega?'(igual a entrega)':''));
-  msg+=linea('👤','Hunter',d.hunter);msg+=linea('📅','Fecha',d.fecha);msg+='\n';
-  if(tiene(d.tipo)||tiene(d.venta)||tiene(d.marcas)||tiene(d.vol)||tiene(d.pot)||tiene(d.tam)||tiene(d.proyeccion)){
-    msg+=`📊 *SEGMENTACIÓN*\n`;
-    msg+=linea('🏪','Tipo',d.tipo);msg+=linea('💼','Venta',d.venta);msg+=linea('🏷','Marcas',d.marcas);
-    msg+=linea('💰','Volumen',d.vol);msg+=linea('🎯','Potencial',d.pot);msg+=linea('📈','Proyección',d.proyeccion);msg+=linea('🏗','Tamaño',d.tam);msg+='\n';
-  }
-  if(tiene(d.obs)) msg+=`💬 *OBSERVACIONES*\n${d.obs}\n\n`;
-  msg+=`━━━━━━━━━━━━━━━━━━━━━━━\n✅ Estado: PENDIENTE DE ALTA\n⏰ ${new Date().toLocaleString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}`;
-  const el=document.getElementById('wa-preview');
-  if(el) el.textContent=msg;
-}
-function copiarWA(){
-  const el=document.getElementById('wa-preview');
-  const txt=el?.textContent||'';
-  if(!txt||txt.includes('Completá')){toast('Completá al menos el nombre del cliente','red');return;}
-  navigator.clipboard.writeText(txt).then(()=>{
-    const btn=document.getElementById('wa-copy-btn');
-    if(btn){btn.textContent='✅ ¡Copiado!';btn.classList.add('copied');setTimeout(()=>{btn.innerHTML='📋 Copiar mensaje';btn.classList.remove('copied');},2500);}
-    toast('Mensaje copiado — Pegalo en WhatsApp');
-  }).catch(()=>{
-    const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
-    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
-    toast('Mensaje copiado');
-  });
-}
-async function guardarAltaEnCRM(){
-  const d=getAltaData();
-  if(!d.nombre){toast('El nombre es obligatorio','red');return;}
-  if(!d.cuit){toast('El CUIT es obligatorio','red');return;}
-  if(!d.zona){toast('Seleccioná una zona','red');return;}
-  if(!d.hunter){toast('Seleccioná el Hunter','red');return;}
-  const cuitClean=d.cuit.replace(/-/g,'');
-  if(cuitClean&&DB.leads.find(l=>(l.cuit||'').replace(/-/g,'')===cuitClean)){toast('Ya existe un lead con ese CUIT','red');return;}
-  const zonaObj=DB.zonas.find(z=>z.label===d.zona)||DB.zonas[0];
-  const hunterObj=DB.hunters.find(h=>h.nombre===d.hunter)||DB.hunters[0];
-  const newLead={
-    id:crypto.randomUUID(),nombre:d.nombre,cuit:d.cuit,rubro:d.tipo||'',wp:d.tel,email:d.mail,contacto:'',
-    obs:[d.obs,d.proyeccion?'Proyección: '+d.proyeccion:''].filter(Boolean).join('\n'),
-    estado:'Dado de alta',campana:'Alta manual',zona_id:zonaObj?.id||'',zona_label:d.zona,
-    hunter_id:hunterObj?.id||'',hunter_nombre:d.hunter,activador_id:null,activador_nombre:'',
-    motivo_perdida:'',monto:0,capacitaciones:0,seg_tipo:d.tipo,
-    seg_venta:d.venta.join(', '),seg_marcas:d.marcas.join(', '),
-    seg_volumen:d.vol,seg_potencial:d.pot,seg_tamano:d.tam,proyeccion:d.proyeccion,
-    fecha_contacto:d.fecha||hoy(),fecha_alta:d.fecha||hoy(),fecha_traspaso:'',
-    historial:JSON.stringify([
-      {a:'Alta registrada vía formulario',d:`Hunter: ${d.hunter} | Zona: ${d.zona}`,f:hoy()},
-      {a:'📊 Segmentación cargada',d:`Tipo: ${d.tipo||'—'} | Venta: ${d.venta.join(', ')||'—'} | Vol: ${d.vol||'—'} | Potencial: ${d.pot||'—'}`,f:hoy()}
-    ])
-  };
-  const {error}=await sb.from('leads').insert([newLead]);
-  if(error){toast('Error al guardar: '+error.message,'red');return;}
-  DB.leads.unshift(mapLead(newLead));
-  updateBadges();toast('✅ Cliente guardado en CRM con segmentación completa');limpiarFormAlta();
-}
-function limpiarFormAlta(){
-  ['af-nombre','af-cuit','af-tel','af-mail','af-dir-entrega','af-dir-factu','af-proyeccion','af-obs-alta'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('af-zona')&&(document.getElementById('af-zona').value='');
-  document.getElementById('af-hunter-sel')&&(document.getElementById('af-hunter-sel').value='');
-  document.getElementById('af-fecha')&&(document.getElementById('af-fecha').value=hoy());
-  altaSeg.tipo='';altaSeg.venta=[];altaSeg.vol='';altaSeg.pot='';altaSeg.tam='';altaMarcas.length=0;
-  renderMarcasTags();
-  document.querySelectorAll('.seg-btn').forEach(b=>b.className='seg-btn');
-  updateWA();
-}
-
-// ════════════════════════════════════════════════
-// LEADS ENTRANTES
-// ════════════════════════════════════════════════
-let leadsEntrantes=[];
-
-function renderEntrantes(){
-  const lista=document.getElementById('entrantes-lista');
-  const cnt=document.getElementById('entrantes-count');
-  const pending=DB.leads.filter(l=>l.estado==='Sin gestionar');
-  if(cnt) cnt.textContent=pending.length+' leads';
-  document.getElementById('nb-entrantes')&&(document.getElementById('nb-entrantes').textContent=pending.length||0);
-  if(!lista) return;
-  if(!pending.length){lista.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3);font-size:12px">✅ Sin leads pendientes de gestionar</div>';return;}
-  lista.innerHTML=pending.slice(0,20).map(l=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
-      <div style="flex:1">
-        <div style="font-weight:700;font-size:13px">${l.nombre}</div>
-        <div style="font-size:11px;color:var(--text3);${''}">${l.cuit||''}${l.rubro?' · '+l.rubro:''} · ${l.campana||'—'}</div>
-      </div>
-      <div style="font-size:10px;color:var(--text3)">${l.fecha_contacto||''}</div>
-      <button onclick="contactarEntrante('${l.id}')" style="background:var(--green);border:none;border-radius:7px;padding:5px 12px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)">Contactar</button>
-    </div>`).join('');
-}
-function contactarEntrante(id){
-  const l=DB.leads.find(x=>x.id===id);
-  if(!l) return;
-  l.estado='Contactado';
-  const h=JSON.parse(l.historial||'[]');
-  h.push({a:'Contactado desde Leads Entrantes',d:'Primer contacto registrado',f:hoy()});
-  l.historial=JSON.stringify(h);
-  sb.from('leads').update({estado:'Contactado',historial:l.historial}).eq('id',id);
-  updateBadges();renderEntrantes();
-  toast('Lead marcado como contactado');
-}
-
-async function sincronizarSupabase(){
-  const wrap=document.getElementById('sync-banner-wrap');
-  const dot=document.getElementById('sync-status-dot');
-  const txt=document.getElementById('sync-status-txt');
-  const lista=document.getElementById('supabase-leads-list');
-  if(dot){dot.className='status-dot idle';}
-  if(txt) txt.textContent='Sincronizando...';
-  try{
-    const {data,error}=await sb.from('leads').select('*').eq('estado','Sin gestionar').order('created_at',{ascending:false}).limit(50);
-    if(error) throw error;
-    if(dot) dot.className='status-dot ok';
-    if(txt) txt.textContent=`${data.length} leads · ${new Date().toLocaleTimeString('es-AR')}`;
-    if(wrap) wrap.innerHTML=data.length?`<div class="sync-banner">✅ ${data.length} lead${data.length!==1?'s':''} sin gestionar encontrado${data.length!==1?'s':''}</div>`:`<div class="sync-banner">✅ Sin leads pendientes en Supabase</div>`;
-    if(lista){
-      lista.innerHTML=data.length?data.map(l=>`
-        <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
-          <div style="flex:1">
-            <div style="font-weight:700;font-size:12px">${l.nombre}</div>
-            <div style="font-size:10px;color:var(--text3)">${l.cuit||''} · ${l.campana||'—'} · ${l.origen||'—'}</div>
-          </div>
-          <button onclick="importarDesdeSupa('${l.id}')" style="background:var(--blue);border:none;border-radius:6px;padding:4px 10px;color:#fff;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans)">+ Agregar</button>
-        </div>`).join(''):'<div style="text-align:center;padding:16px;color:var(--text3);font-size:12px">Sin leads pendientes</div>';
-    }
-  }catch(e){
-    if(dot) dot.className='status-dot err';
-    if(txt) txt.textContent='Error';
-    if(wrap) wrap.innerHTML=`<div class="sync-banner err">❌ Error al sincronizar: ${e.message}</div>`;
-  }
-}
-
-async function importarDesdeSupa(id){
-  const {data,error}=await sb.from('leads').select('*').eq('id',id).single();
-  if(error||!data){toast('No se pudo importar','red');return;}
-  if(DB.leads.find(l=>l.id===id)){toast('Ya está en el CRM','red');return;}
-  DB.leads.unshift(mapLead(data));
-  updateBadges();renderEntrantes();
-  toast('Lead importado desde Supabase ✅');
-}
-
-async function parsearWAconIA(){
-  const raw=document.getElementById('wa-raw-msg')?.value.trim();
-  const res=document.getElementById('wa-parse-result');
-  if(!raw||!res){toast('Pegá un mensaje primero','red');return;}
-  res.innerHTML='<div style="color:var(--text3);font-size:12px">🤖 Analizando con IA...</div>';
-  try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:600,
-        system:'Sos un asistente que extrae datos de mensajes de WhatsApp de potenciales clientes B2B. Respondé SOLO con un JSON válido sin markdown con estos campos: nombre, cuit, telefono, email, zona, rubro, observaciones. Si un campo no está presente, usá string vacío.',
-        messages:[{role:'user',content:'Extraé los datos de este mensaje:\n\n'+raw}]
-      })
-    });
-    const d=await r.json();
-    const txt=d.content?.find(c=>c.type==='text')?.text||'{}';
-    let parsed={};
-    try{parsed=JSON.parse(txt.replace(/```json|```/g,'').trim());}catch{}
-    mostrarParseResult(parsed,raw);
-  }catch(e){
-    res.innerHTML=`<div style="color:var(--accent);font-size:12px">Error: ${e.message}</div>`;
-  }
-}
-
-function parsearWAlocal(){
-  const raw=document.getElementById('wa-raw-msg')?.value.trim();
-  const res=document.getElementById('wa-parse-result');
-  if(!raw||!res){toast('Pegá un mensaje primero','red');return;}
-  const parsed={nombre:'',cuit:'',telefono:'',email:'',zona:'',rubro:'',observaciones:''};
-  raw.split('\n').forEach(line=>{
-    const [k,...vp]=line.split(':');const v=vp.join(':').trim();const low=k.toLowerCase().trim();
-    if(!v) return;
-    if(low.match(/nombre|razón|razon|empresa|negocio|taller|gomería/)) parsed.nombre=v;
-    else if(low.match(/cuit|cuil/)) parsed.cuit=v;
-    else if(low.match(/tel|whatsapp|cel|fono|número/)) parsed.telefono=v;
-    else if(low.match(/mail|email|correo/)) parsed.email=v;
-    else if(low.match(/zona|region|ciudad|localidad/)) parsed.zona=v;
-    else if(low.match(/rubro|tipo|actividad|negocio/)) parsed.rubro=v;
-  });
-  if(!parsed.nombre) parsed.observaciones=raw.slice(0,200);
-  mostrarParseResult(parsed,raw);
-}
-
-function mostrarParseResult(parsed,raw){
-  const res=document.getElementById('wa-parse-result');
-  if(!res) return;
-  const campos=[
-    {k:'nombre',l:'Razón Social'},{k:'cuit',l:'CUIT'},{k:'telefono',l:'Teléfono'},
-    {k:'email',l:'Email'},{k:'zona',l:'Zona'},{k:'rubro',l:'Rubro'},{k:'observaciones',l:'Obs.'}
-  ];
-  res.innerHTML=`
-    <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
-      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:10px">✅ Datos detectados — Revisá y confirmá</div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        ${campos.map(c=>`<div style="display:flex;gap:8px;align-items:center">
-          <span style="font-size:10px;color:var(--text3);width:80px;flex-shrink:0">${c.l}</span>
-          <input id="parse-${c.k}" value="${(parsed[c.k]||'').replace(/"/g,'&quot;')}" style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-size:12px;font-family:var(--sans);outline:none"/>
-        </div>`).join('')}
-      </div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button onclick="guardarLeadParseado()" style="flex:1;background:var(--green);border:none;border-radius:8px;padding:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans)">💾 Guardar como Lead</button>
-        <button onclick="document.getElementById('wa-raw-msg').value='';document.getElementById('wa-parse-result').innerHTML=''" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--sans)">Limpiar</button>
-      </div>
-    </div>`;
-}
-
-async function guardarLeadParseado(){
-  const campos=['nombre','cuit','telefono','email','zona','rubro','observaciones'];
-  const d={};
-  campos.forEach(k=>{d[k]=document.getElementById('parse-'+k)?.value.trim()||'';});
-  if(!d.nombre){toast('El nombre es obligatorio','red');return;}
-  const zonaObj=DB.zonas.find(z=>z.label===d.zona)||DB.zonas[0];
-  const hunterObj=DB.hunters[0];
-  const newLead={
-    id:crypto.randomUUID(),nombre:d.nombre,cuit:d.cuit,rubro:d.rubro,wp:d.telefono,email:d.email,
-    contacto:'',obs:d.observaciones,estado:'Sin gestionar',campana:'WhatsApp entrante',
-    zona_id:zonaObj?.id||'',zona_label:d.zona,hunter_id:hunterObj?.id||'',hunter_nombre:hunterObj?.nombre||'',
-    activador_id:null,activador_nombre:'',motivo_perdida:'',monto:0,capacitaciones:0,
-    seg_tipo:'',seg_venta:'',seg_marcas:'',seg_volumen:'',seg_potencial:'',seg_tamano:'',proyeccion:'',
-    fecha_contacto:hoy(),fecha_alta:'',fecha_traspaso:'',
-    historial:JSON.stringify([{a:'Lead creado desde WhatsApp',d:'Parseado con IA desde mensaje entrante',f:hoy()}])
-  };
-  const {error}=await sb.from('leads').insert([newLead]);
-  if(error){toast('Error al guardar: '+error.message,'red');return;}
-  DB.leads.unshift(mapLead(newLead));
-  document.getElementById('wa-raw-msg')&&(document.getElementById('wa-raw-msg').value='');
-  document.getElementById('wa-parse-result')&&(document.getElementById('wa-parse-result').innerHTML='');
-  updateBadges();renderEntrantes();
-  toast('Lead guardado desde WhatsApp ✅');
-}
-
-// ════════════════════════════════════════════════
-// CONEXIÓN API CONFIG
-// ════════════════════════════════════════════════
-let CFG={netlifyUrl:'',apiKey:''};
-
-function initConfig(){
-  const saved=localStorage.getItem('crm_cfg');
-  if(saved) try{CFG=JSON.parse(saved);}catch{}
-  const u=document.getElementById('cfg-netlify-url');
-  const k=document.getElementById('cfg-api-key');
-  if(u) u.value=CFG.netlifyUrl||'';
-  if(k) k.value=CFG.apiKey||'';
-}
-function guardarConfig(){
-  CFG.netlifyUrl=(document.getElementById('cfg-netlify-url')?.value||'').replace(/\/$/,'');
-  CFG.apiKey=document.getElementById('cfg-api-key')?.value||'';
-  localStorage.setItem('crm_cfg',JSON.stringify(CFG));
-}
-async function testConexion(){
-  guardarConfig();
-  const res=document.getElementById('test-result');
-  if(!res) return;
-  if(!CFG.netlifyUrl){res.innerHTML='<span style="color:var(--accent)">⚠ Ingresá la URL de Netlify primero</span>';return;}
-  res.innerHTML='<span style="color:var(--text3)">Probando...</span>';
-  try{
-    const r=await fetch(CFG.netlifyUrl+'/.netlify/functions/get-leads?limit=1',{
-      headers:{'x-api-key':CFG.apiKey||''}
-    });
-    if(r.ok){
-      res.innerHTML='<div class="status-dot ok" style="display:inline-block"></div><span style="color:var(--green)"> ✅ Conexión exitosa</span>';
-    }else{
-      res.innerHTML=`<div class="status-dot err" style="display:inline-block"></div><span style="color:var(--accent)"> ❌ Error ${r.status}</span>`;
-    }
-  }catch(e){
-    res.innerHTML=`<div class="status-dot err" style="display:inline-block"></div><span style="color:var(--accent)"> ❌ ${e.message}</span>`;
-  }
-}
-
-loadDB();}
+    if(!rH.data||rH.data.length===0){await seedSupabase();return loadDB();}
     // Limpiar activadores viejos (más de 3 = datos demo anteriores)
     if(rA.data&&rA.data.length>3){
       const oldIds=rA.data.filter(a=>!['a0','a1','a2'].includes(a.id)).map(a=>a.id);
@@ -1502,10 +929,6 @@ const TAB_META={
   perdidas:['Pérdidas','Motivos de no conversión'],
   pedidos:['Primer Pedido','Ciclo cerrado'],
   hunters:['Hunters KPI','Rendimiento del equipo'],
-  'gestion-hunters':['Gestión Hunters','Equipo y operadores'],
-  alta:['Alta de Cliente','Formulario + mensaje WhatsApp'],
-  entrantes:['Leads Entrantes','WhatsApp · Landing · Campañas'],
-  config:['Conexión API','Netlify + Supabase'],
   'gestion-hunters':['Gestión Perfiles','Hunters y ABM'],
   ia:['IA Asistente','Análisis inteligente'],
 };
@@ -1520,10 +943,10 @@ function showTab(id,el){
 }
 function renderTab(id){
   ({dashboard:renderDashboard,leads:renderLeads,pipeline:renderPipeline,
-    traspaso:()=>{},zonas:()=>{},
+    traspaso:()=>{},zonas:()=>{},ia:()=>{},alta:()=>{},'leads-entrantes':()=>{},'conexion-api':()=>{},
     activadores:renderActivadores,
     campanas:renderCampanas,perdidas:renderPerdidas,pedidos:renderPedidos,
-    hunters:renderHunters,'gestion-hunters':renderGestionHunters,alta:()=>{initAltaForm();},entrantes:()=>{renderEntrantes();},config:()=>{initConfig();}})[id]?.();
+    hunters:renderHunters,'gestion-hunters':renderGestionHunters})[id]?.();
 }
 
 // ════════════════════════════════════════════════
@@ -1544,10 +967,18 @@ function renderDashboard(){
   const listos=l.filter(x=>x.estado==='Listo para activar').length;
   const perdidos=l.filter(x=>x.estado==='Perdido').length;
   const sinG=l.filter(x=>x.estado==='Sin gestionar').length;
+  const contactados=l.filter(x=>x.estado==='Contactado').length;
+  const prospectos=l.filter(x=>x.estado==='Prospecto').length;
+  const altas=l.filter(x=>x.estado==='Alta de cliente').length;
+  const capacitacion=l.filter(x=>x.estado==='Capacitación').length;
+  const primerPedido=l.filter(x=>x.estado==='Primer Pedido').length;
+  const perdidosCount=l.filter(x=>x.estado==='Perdido').length;
   const totalInteracciones=l.reduce((acc,x)=>acc+(x.historial?.length||0),0);
-  const promedioInt=l.length?Math.round(totalInteracciones/l.length*10)/10:0;
   const conInteraccion=l.filter(x=>(x.historial?.length||0)>1).length;
-  const sinContacto=l.filter(x=>x.estado==='Sin gestionar'&&(!x.historial||x.historial.length<=1)).length;
+  // Conversiones
+  const convProspecto=l.length?Math.round(prospectos/l.length*100):0;
+  const convAlta=prospectos?Math.round(altas/prospectos*100):0;
+  const convPedido=altas?Math.round(primerPedido/altas*100):0;
   const monto=l.reduce((s,x)=>s+x.monto,0);
 
   updateBadges();
@@ -1555,15 +986,37 @@ function renderDashboard(){
   if(dtl) dtl.textContent=l.length;
   document.getElementById('dash-kpis').innerHTML=[
     {icon:'👤',val:l.length,lbl:'Total leads',sub:'base importada',c:'#3b82f6'},
-    {icon:'🎓',val:l.filter(x=>x.estado==='En capacitación').length,lbl:'En capacitación',sub:'proceso Hunter',c:'#f97316'},
-    {icon:'🔄',val:listos,lbl:'Listos para traspasar',sub:'aguardan Activador',c:'#06b6d4'},
-    {icon:'⚡',val:activ,lbl:'Activados',sub:'con Activador asignado',c:'#10b981'},
-    {icon:'💰',val:'$'+(monto/1000).toFixed(1)+'K',lbl:'Monto generado',sub:'primer pedido',c:'#fbbf24'},
-    {icon:'⚠️',val:sinG,lbl:'Sin gestionar',sub:'requieren contacto',c:sinG>=5?'#e63946':'#fbbf24'},
+    {icon:'⚠️',val:sinG,lbl:'Sin gestionar',sub:'requieren contacto',c:sinG>=5?'#e63946':'#64748b'},
+    {icon:'📞',val:contactados,lbl:'Contactados',sub:'primer contacto',c:'#1d4ed8'},
+    {icon:'🎯',val:prospectos,lbl:'Prospectos',sub:'condiciones ok',c:'#0891b2'},
+    {icon:'🏷️',val:altas,lbl:'En alta',sub:'proceso 72hs',c:'#7c3aed'},
+    {icon:'🎓',val:capacitacion,lbl:'Capacitación',sub:'en formación',c:'#059669'},
+    {icon:'📦',val:primerPedido,lbl:'Primer Pedido',sub:'primer compra',c:'#d97706'},
+    {icon:'🚫',val:perdidosCount,lbl:'Perdidos',sub:'sin conversión',c:'#e63946'},
+    {icon:'💰',val:'$'+(monto/1000).toFixed(1)+'K',lbl:'Monto generado',sub:'primer pedido',c:'#f59e0b'},
     {icon:'💬',val:totalInteracciones,lbl:'Interacciones',sub:'total registradas',c:'#7c3aed'},
-    {icon:'📊',val:promedioInt,lbl:'Prom. interacciones',sub:'por lead',c:'#0891b2'},
-    {icon:'🎯',val:conInteraccion,lbl:'Con seguimiento',sub:'leads contactados',c:'#059669'},
+    {icon:'🎯',val:conInteraccion,lbl:'Con seguimiento',sub:'leads activos',c:'#059669'},
   ].map(k=>`<div class="kpi" style="--kc:${k.c}"><div style="font-size:18px;margin-bottom:4px">${k.icon}</div><div class="kpi-val">${k.val}</div><div class="kpi-lbl">${k.lbl}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+  // Conversiones
+  const convEl=document.getElementById('dash-conversiones');
+  if(convEl) convEl.innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px">
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:16px;text-align:center;border-top:3px solid #0891b2">
+        <div style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Leads → Prospectos</div>
+        <div style="font-size:36px;font-weight:900;color:#0891b2;font-family:var(--display)">${convProspecto}%</div>
+        <div style="font-size:12px;color:#475569;margin-top:4px">${l.length} leads → ${prospectos} prospectos</div>
+      </div>
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:16px;text-align:center;border-top:3px solid #7c3aed">
+        <div style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Prospectos → Alta</div>
+        <div style="font-size:36px;font-weight:900;color:#7c3aed;font-family:var(--display)">${convAlta}%</div>
+        <div style="font-size:12px;color:#475569;margin-top:4px">${prospectos} prospectos → ${altas} altas</div>
+      </div>
+      <div style="background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:16px;text-align:center;border-top:3px solid #d97706">
+        <div style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Alta → Primer Pedido</div>
+        <div style="font-size:36px;font-weight:900;color:#d97706;font-family:var(--display)">${convPedido}%</div>
+        <div style="font-size:12px;color:#475569;margin-top:4px">${altas} altas → ${primerPedido} pedidos</div>
+      </div>
+    </div>`;
 
   // Flujo visual
   const total=l.length||1;
@@ -1702,8 +1155,8 @@ function renderPipeline(){
         ${e}<span class="k-cnt" id="kcnt-${e.replace(/ /g,'_')}">0</span>
       </div>
       <div class="k-body" id="kbody-${e.replace(/ /g,'_')}"
-        ondragover="event.preventDefault();this.classList.add('drag-over')"
-        ondragleave="this.classList.remove('drag-over')"
+        ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over')"
+        ondragleave="if(!this.contains(event.relatedTarget)){this.classList.remove('drag-over')}"
         ondrop="dropCard(event,'${e}')">
       </div>
     </div>`).join('');
@@ -1770,6 +1223,11 @@ async function dropCard(e,estado){
     // Mostrar campo N° cliente solo si va a Alta de cliente
     const campoNro=document.getElementById('campo-nro-cliente');
     if(campoNro) campoNro.style.display=estado==='Alta de cliente'?'block':'none';
+    // Mostrar motivo de pérdida si va a Perdido
+    const campoMotivo=document.getElementById('campo-motivo-perdida');
+    if(campoMotivo) campoMotivo.style.display=estado==='Perdido'?'block':'none';
+    const selMotivo=document.getElementById('interaccion-motivo-perdida');
+    if(selMotivo) selMotivo.value='';
     document.getElementById('modal-interaccion').classList.add('open');
   }
   dragId=null;
@@ -1791,6 +1249,13 @@ async function confirmarInteraccion(){
     const nroCliente=document.getElementById('interaccion-nro-cliente')?.value?.trim();
     if(nuevoEstado==='Alta de cliente'&&nroCliente){
       l.nroCliente=nroCliente;
+    }
+    const motivoPerdida=document.getElementById('interaccion-motivo-perdida')?.value?.trim();
+    if(nuevoEstado==='Perdido'&&motivoPerdida){
+      l.motivo=motivoPerdida;
+    }
+    if(nuevoEstado==='Alta de cliente'){
+      setTimeout(()=>descargarExcelAlta(l),500);
     }
     l.historial.push({a:'Cambio de estado',d:`→ ${nuevoEstado} | ${detalle}${nroCliente?' | N°Cliente: '+nroCliente:''}`,f:hoy()});
     if(prox) l.fechaContacto=prox;
@@ -2336,6 +1801,8 @@ function abrirModalImport(){
   document.getElementById('import-confirm').disabled=true;
   document.getElementById('import-hunter-assign').style.display='none';
   document.getElementById('import-filename').textContent='';
+  const cv=document.getElementById('import-campana-val');
+  if(cv){cv.value='';cv.style.borderColor='var(--teal)';}
   document.getElementById('modal-import').classList.add('open');
   // Wire input on first open
   setTimeout(initImportInput,50);
@@ -2374,7 +1841,39 @@ function procesarArchivoImport(file){
       } else {
         const wb=XLSX.read(new Uint8Array(ev.target.result),{type:'array'});
         const ws=wb.Sheets[wb.SheetNames[0]];
+        // Intentar parsear normal primero
         rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+        // Si la primera fila no tiene columnas útiles (es un título), usar range para saltar filas
+        if(rows.length>0){
+          const firstKeys=Object.keys(rows[0]);
+          // Permisivo: si la primera columna tiene contenido no numérico largo, es un título
+          const firstColVal=String(firstKeys[0]||'').trim();
+          const looksLikeTitle=firstColVal.length>20||firstColVal.includes('TRAZABILIDAD')||
+                               firstColVal.includes('LEADS')||firstColVal.includes('CAMPAÑA')||
+                               firstColVal.includes('Hunter')||firstColVal.includes('META');
+          const hasUsefulCols=!looksLikeTitle&&firstKeys.some(k=>{
+            const kl=k.toLowerCase();
+            return kl.includes('nombre')||kl.includes('empresa')||kl.includes('raz')||
+                   kl.includes('cuit')||kl.includes('whatsapp')||kl.includes('ciudad')||
+                   kl.includes('estado')||kl.includes('fecha')||kl.includes('/');
+          });
+          if(!hasUsefulCols){
+            // Buscar la fila que tiene los headers reales (máx fila 5)
+            for(let skip=1;skip<=4;skip++){
+              const tryRows=XLSX.utils.sheet_to_json(ws,{defval:'',range:skip});
+              if(tryRows.length>0){
+                const tryKeys=Object.keys(tryRows[0]);
+                const tryUseful=tryKeys.some(k=>{
+                  const kl=k.toLowerCase();
+                  return kl.includes('nombre')||kl.includes('empresa')||kl.includes('raz')||
+                         kl.includes('cuit')||kl.includes('whatsapp')||kl.includes('ciudad')||
+                         kl.includes('estado')||kl.includes('fecha');
+                });
+                if(tryUseful){rows=tryRows;break;}
+              }
+            }
+          }
+        }
       }
 
       if(!rows.length){toast('El archivo está vacío o no tiene datos reconocibles','red');return;}
@@ -2382,7 +1881,7 @@ function procesarArchivoImport(file){
       importParsed=rows;
       const cols=Object.keys(rows[0]||{});
       const hasCuit=cols.some(c=>c.toLowerCase().includes('cuit'));
-      const hasNombre=cols.some(c=>{const cl=c.toLowerCase();return cl.includes('raz')||cl.includes('nombre')||cl.includes('empresa')||cl.includes('social')||cl.includes('comercio')||cl.includes('negocio')||cl.includes('cliente')||cl.includes('apellido')||cl.includes('número - zona')||cl.includes('numero - zona');});
+      const hasNombre=cols.some(c=>{const cl=c.toLowerCase().replace(/\s+/g,' ').trim();return cl.includes('raz')||cl.includes('nombre')||cl.includes('empresa')||cl.includes('social')||cl.includes('comercio')||cl.includes('negocio')||cl.includes('cliente')||cl.includes('apellido')||cl.includes('número - zona')||cl.includes('nombre / empresa')||cl.includes('ciudad')||cl.includes('estado');});
       let dups=0;
       rows.forEach(r=>{
         const cuit=Object.values(r).find((_,i)=>cols[i].toLowerCase().includes('cuit'));
@@ -2438,23 +1937,36 @@ async function confirmarImport(){
         _val(row['Razón Social']),_val(row['Razón Social 2']),_val(row['Razón Social 3']),
         _val(row['Nombre del comercio']),_val(row['Nombre del comercio 2']),_val(row['Nombre del comercio 3']),
         _val(row['Nombre y Apellido']),
+        _val(row['Nombre / Empresa']),_val(row['Nombre/Empresa']),_val(row['nombre / empresa']),
+        _val(row['Empresa']),_val(row['empresa']),
+        _val(row['NOMBRE']),_val(row['Name']),_val(row['name']),
       ].filter(Boolean);
-      // Preferir el primero que NO sea solo teléfono
-      return candidates.find(v=>!_esNum(v)) || candidates[0] || null;
+      // Primero buscar uno que no sea solo número/teléfono
+      const sinNum=candidates.find(v=>!_esNum(v));
+      if(sinNum) return sinNum;
+      // Fallback: primera columna del row que tenga texto real
+      const fallback=Object.values(row).find(v=>{
+        const s=String(v||'').trim();
+        return s.length>1&&s.length<100&&isNaN(s)&&!s.match(/^\d[\d\s\-\+]{6,}$/);
+      });
+      return fallback?String(fallback).trim():null;
     })();
     if(!nombre) continue;
 
     // ── CUIT ────────────────────────────────────────────────
     const cuitRaw=(
-      _val(row['Nº CUIT'])||_val(row['CUIT'])||_val(row['Nº CUIT 2'])||''
+      _val(row['Nº CUIT'])||_val(row['CUIT'])||_val(row['Nº CUIT 2'])||
+      _val(row['CUIT '])||_val(row[' CUIT'])||''
     ).replace(/\D/g,'');
-    if(cuitRaw&&DB.leads.find(l=>(l.cuit||'').replace(/\D/g,'')===cuitRaw)){saltados++;continue;}
+    // Solo verificar duplicado si HAY CUIT — sin CUIT se importa igual
+    if(cuitRaw.length>=10&&DB.leads.find(l=>(l.cuit||'').replace(/\D/g,'')===cuitRaw)){saltados++;continue;}
 
     // ── WhatsApp / Teléfono ──────────────────────────────────
     const wp=(
       _val(row['Número de WhatsApp'])||_val(row['Número de WhatsApp 2'])||
       _val(row['Número de WhatsApp 3'])||_val(row['Número de WhatsApp 4'])||
-      _val(row['Teléfono'])||_val(row['Teléfono 2'])||''
+      _val(row['Teléfono'])||_val(row['Teléfono 2'])||
+      _val(row['WhatsApp'])||_val(row['whatsapp'])||''
     );
 
     // ── Email ────────────────────────────────────────────────
@@ -2463,7 +1975,9 @@ async function confirmarImport(){
     // ── Rubro ────────────────────────────────────────────────
     const rubro=(
       _val(row['Tipo de comercio'])||_val(row['Tipo de comercio 2'])||
-      _val(row['Tipo de comercio a abrir'])||''
+      _val(row['Tipo de comercio a abrir'])||
+      _val(row['Interés (Marca)'])||_val(row['Interés (Marca)'])||_val(row['Interes (Marca)'])||
+      _val(row['Datos / Perfil'])||''
     );
 
     // ── Provincia / Zona ─────────────────────────────────────
@@ -2483,6 +1997,10 @@ async function confirmarImport(){
       _val(row['Marcas que comercializas'])||_val(row['Marcas que comercializas 2'])||_val(row['Marcas que vas a comercializar']),
       _val(row['Referencias'])||_val(row['Referencias 2'])||_val(row['Referencias 3']),
       _val(row['Dirección del negocio'])||_val(row['Dirección del negocio 2']),
+      // Meta Ads columns
+      _val(row['Observaciones Vendedor'])||_val(row['Observaciones Vendedor'])||_val(row['Observaciones']),
+      _val(row['Con quién trabaja'])||_val(row['Con quien trabaja']),
+      _val(row['Datos / Perfil']),
     ].filter(Boolean);
     const obs=partes.join(' | ');
 
@@ -2498,12 +2016,15 @@ async function confirmarImport(){
       }
     }
 
+    const _cp=_val(row['Ciudad / Provincia'])||'';
+    const _cpArr=_cp?(_cp.includes('/')?_cp.split('/'):_cp.includes(',')?_cp.split(','):[_cp]):[]; 
     const localidad=(
       _val(row['Localidad'])||_val(row['Localidad 2'])||_val(row['Localidad 3'])||
-      _val(row['Localidad | Provincia'])||''
+      _val(row['Localidad | Provincia'])||(_cpArr[0]||'').trim()||''
     );
     const provincia=(
-      _val(row['Provincia'])||_val(row['Provincia 2'])||_val(row['Provincia 3'])||''
+      _val(row['Provincia'])||_val(row['Provincia 2'])||_val(row['Provincia 3'])||
+      (_cpArr.length>1?_cpArr[_cpArr.length-1].trim():'')||''
     );
 
     const newLead={
@@ -2625,8 +2146,6 @@ function updateBadges(){
   document.getElementById('nb-leads').textContent=l.length;
   document.getElementById('nb-perdidas').textContent=l.filter(x=>x.estado==='Perdido').length;
   document.getElementById('nb-pedidos').textContent=l.filter(x=>x.monto>0).length;
-  const nbEntr=document.getElementById('nb-entrantes');
-  if(nbEntr) nbEntr.textContent=l.filter(x=>x.estado==='Sin gestionar').length;
   document.getElementById('nb-traspaso').textContent=l.filter(x=>x.estado==='Listo para activar'&&!x.activadorId).length;
 }
 function toast(msg,type){
@@ -2796,6 +2315,46 @@ async function limpiarBase(){
   toast('Base limpiada correctamente ✅');
 }
 
+// ═══════════════════════════════════════════
+// DESCARGA EXCEL ALTA DE CLIENTE
+// ═══════════════════════════════════════════
+function descargarExcelAlta(lead){
+  const z=getZona(lead.zonaId);
+  const a=getActivador(lead.activadorId);
+  const h=getHunter(lead.hunterId);
+  const wb=XLSX.utils.book_new();
+  const data=[
+    ['ALTA DE CLIENTE — CROMOSOL','','',''],
+    ['Generado por Hunter CRM','','',''],
+    ['','','',''],
+    ['DATOS DEL CLIENTE','','',''],
+    ['Razón Social',lead.nombre||'','',''],
+    ['CUIT',lead.cuit||'','',''],
+    ['WhatsApp',lead.wp||'','',''],
+    ['Email',lead.email||'','',''],
+    ['Rubro',lead.rubro||'','',''],
+    ['N° de Cliente',lead.nroCliente||'','',''],
+    ['','','',''],
+    ['ASIGNACIÓN COMERCIAL','','',''],
+    ['Hunter',h.nombre||'','',''],
+    ['Zona',z.label||'','',''],
+    ['Activador Comercial',a.nombre||'','',''],
+    ['Email Activador',a.email||'','',''],
+    ['','','',''],
+    ['DETALLE','','',''],
+    ['Fecha de Alta',new Date().toLocaleDateString('es-AR'),'',''],
+    ['Observaciones',lead.obs||'','',''],
+    ['','','',''],
+    ['ENVIAR A','clientesabm@cromosol.com','',''],
+  ];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:25},{wch:35},{wch:20},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'Alta Cliente');
+  const nombre=(lead.nombre||'cliente').replace(/[^a-zA-Z0-9]/g,'_').substring(0,30);
+  XLSX.writeFile(wb,`Alta_${nombre}_${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast('📥 Planilla de alta descargada');
+}
+
 loadDB();
 </script>
 
@@ -2844,6 +2403,22 @@ loadDB();
     <h2 id="modal-interaccion-titulo">Registrar interacción</h2>
     <div style="font-size:13px;color:#475569;margin-bottom:16px;padding:10px 12px;background:#f5f7fb;border-radius:8px;font-weight:600" id="modal-interaccion-lead"></div>
     <div style="display:flex;flex-direction:column;gap:12px">
+      <div id="campo-motivo-perdida" style="display:none">
+        <label style="font-size:12px;color:#e63946;font-weight:700;display:block;margin-bottom:5px">🚫 Motivo de pérdida</label>
+        <select id="interaccion-motivo-perdida" style="width:100%;background:#fff5f5;border:2px solid #fca5a5;border-radius:8px;padding:9px 12px;color:#0f172a;font-size:13px;outline:none;font-family:var(--sans)">
+          <option value="">— Seleccioná el motivo —</option>
+          <option>No cumple con los requisitos</option>
+          <option>No tiene CUIT</option>
+          <option>Es solo vendedor ambulante</option>
+          <option>Solo taller / no es comercio</option>
+          <option>Ya tiene proveedor</option>
+          <option>Precio</option>
+          <option>Sin interés</option>
+          <option>Zona sin cobertura</option>
+          <option>Sin contacto</option>
+          <option>Otro</option>
+        </select>
+      </div>
       <div>
         <label style="font-size:12px;color:#475569;font-weight:600;display:block;margin-bottom:5px">Tipo de contacto</label>
         <select id="interaccion-tipo" style="width:100%;background:#f5f7fb;border:1px solid #dde3ec;border-radius:8px;padding:9px 12px;color:#0f172a;font-size:13px;outline:none;font-family:var(--sans)">
