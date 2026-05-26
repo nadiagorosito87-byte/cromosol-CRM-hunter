@@ -2307,6 +2307,154 @@ function descargarExcelAlta(lead){
   toast('📥 Planilla de alta descargada');
 }
 
+// ════════════════════════════════════════════════
+// HUNTERS KPI
+// ════════════════════════════════════════════════
+function renderHunters(){
+  const l=DB.leads;
+
+  // Poblar selector de meses
+  const selMes=document.getElementById('hunt-filtro-mes');
+  if(selMes){
+    const meses=new Set();
+    l.forEach(x=>{
+      const f=x.fechaContacto||x.fechaAlta||'';
+      if(f&&f.length>=7) meses.add(f.slice(0,7));
+    });
+    const sorted=[...meses].sort().reverse();
+    const curVal=selMes.value;
+    selMes.innerHTML='<option value="all">Acumulado total</option>';
+    sorted.forEach(m=>{
+      const[y,mo]=m.split('-');
+      const label=new Date(y,mo-1).toLocaleString('es-AR',{month:'long',year:'numeric'});
+      selMes.innerHTML+=`<option value="${m}">${label.charAt(0).toUpperCase()+label.slice(1)}</option>`;
+    });
+    if(curVal) selMes.value=curVal;
+  }
+
+  // Filtrar por mes
+  const filtroMes=selMes?.value||'all';
+  const leads=filtroMes==='all'?l:l.filter(x=>{
+    const f=x.fechaContacto||x.fechaAlta||'';
+    return f.startsWith(filtroMes);
+  });
+
+  const periodoEl=document.getElementById('hunt-periodo-label');
+  if(periodoEl) periodoEl.textContent=filtroMes==='all'?
+    `Total acumulado · ${leads.length} leads`:`Mostrando ${leads.length} leads del período`;
+
+  // Métricas
+  const total=leads.length;
+  const prospectos=leads.filter(x=>x.estado==='Prospecto').length;
+  const altas=leads.filter(x=>x.estado==='Alta de cliente').length;
+  const capacitacion=leads.filter(x=>x.estado==='Capacitación').length;
+  const primerPedido=leads.filter(x=>x.estado==='Primer Pedido').length;
+  const perdidosH=leads.filter(x=>x.estado==='Perdido').length;
+  const clientes=altas+capacitacion+primerPedido;
+  const objetivo=+(document.getElementById('hunt-objetivo')?.value||50);
+
+  const convP=total?Math.round(prospectos/total*100):0;
+  const convC=prospectos?Math.round(clientes/prospectos*100):0;
+  const convPP=clientes?Math.round(primerPedido/clientes*100):0;
+  const progObjetivo=objetivo?Math.round(total/objetivo*100):0;
+
+  // KPIs
+  const kpiEl=document.getElementById('hunt-kpis-nuevo');
+  if(kpiEl) kpiEl.innerHTML=[
+    {v:total,l:'Total leads',i:'👤',c:'#1d4ed8'},
+    {v:prospectos,l:'Prospectos',i:'🎯',c:'#0891b2'},
+    {v:clientes,l:'Clientes',i:'🏷️',c:'#7c3aed',sub:'Alta+Cap.+Pedido'},
+    {v:primerPedido,l:'Primer Pedido',i:'📦',c:'#d97706'},
+    {v:perdidosH,l:'Perdidos',i:'🚫',c:'#e63946'},
+    {v:progObjetivo+'%',l:'Prog. objetivo',i:'🎯',c:progObjetivo>=100?'#059669':'#f59e0b',sub:`${total}/${objetivo} leads`},
+  ].map(k=>`
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:16px;border-top:3px solid ${k.c}">
+      <div style="font-size:20px;margin-bottom:6px">${k.i}</div>
+      <div style="font-size:28px;font-weight:900;color:${k.c};font-family:var(--display)">${k.v}</div>
+      <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-top:4px">${k.l}</div>
+      ${k.sub?`<div style="font-size:10px;color:#94a3b8;margin-top:2px">${k.sub}</div>`:''}
+    </div>`).join('');
+
+  // Embudos
+  const embudoEl=document.getElementById('hunt-embudos');
+  if(embudoEl) embudoEl.innerHTML=[
+    {title:'Leads → Prospectos',steps:[{l:'Total leads',v:total,c:'#3b82f6'},{l:'Prospectos',v:prospectos,c:'#0891b2'}],pct:convP+'%',c:'#0891b2'},
+    {title:'Prospectos → Clientes',steps:[{l:'Prospectos',v:prospectos,c:'#0891b2'},{l:'Clientes',v:clientes,c:'#7c3aed'}],pct:convC+'%',c:'#7c3aed'},
+    {title:'Clientes → 1er Pedido',steps:[{l:'Clientes',v:clientes,c:'#7c3aed'},{l:'1er Pedido',v:primerPedido,c:'#d97706'}],pct:convPP+'%',c:'#d97706'},
+  ].map(e=>`
+    <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:18px">
+      <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px">${e.title}</div>
+      ${e.steps.map((s,i)=>`
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:${i<e.steps.length-1?'8px':'0'}">
+          <div style="width:8px;height:8px;border-radius:50%;background:${s.c};flex-shrink:0"></div>
+          <div style="flex:1;font-size:12px;color:#475569">${s.l}</div>
+          <div style="font-size:15px;font-weight:700;color:${s.c}">${s.v}</div>
+        </div>
+        ${i<e.steps.length-1?'<div style="margin:6px 0 6px 18px;height:1px;background:#f1f5f9"></div>':''}`).join('')}
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:11px;color:#94a3b8">Conversión</span>
+        <span style="font-size:22px;font-weight:900;color:${e.c};font-family:var(--display)">${e.pct}</span>
+      </div>
+    </div>`).join('');
+
+  // Gráficos de torta
+  function drawPie(id,labelId,subId,val,tot,color,sub){
+    const canvas=document.getElementById(id);if(!canvas)return;
+    const pct=tot?Math.round(val/tot*100):0;
+    if(window['_ch_'+id]) window['_ch_'+id].destroy();
+    window['_ch_'+id]=new Chart(canvas.getContext('2d'),{
+      type:'doughnut',
+      data:{datasets:[{data:[Math.max(val,0),Math.max(tot-val,0)],backgroundColor:[color,'#f1f5f9'],borderWidth:0,borderRadius:3}]},
+      options:{cutout:'72%',animation:{duration:500},plugins:{legend:{display:false},tooltip:{enabled:false}}}
+    });
+    const lEl=document.getElementById(labelId);const sEl=document.getElementById(subId);
+    if(lEl) lEl.textContent=pct+'%';
+    if(sEl) sEl.textContent=sub;
+  }
+  drawPie('ch-conv1','ch-conv1-label','ch-conv1-sub',prospectos,Math.max(total,1),'#0891b2',prospectos+' de '+total);
+  drawPie('ch-conv2','ch-conv2-label','ch-conv2-sub',clientes,Math.max(prospectos,1),'#7c3aed',clientes+' de '+prospectos);
+  drawPie('ch-conv3','ch-conv3-label','ch-conv3-sub',primerPedido,Math.max(clientes,1),'#d97706',primerPedido+' de '+clientes);
+
+  // Panel objetivo
+  const objEl=document.getElementById('hunt-objetivo-panel');
+  if(objEl){
+    const barW=Math.min(progObjetivo,100);
+    const colorBar=progObjetivo>=100?'#059669':progObjetivo>=75?'#d97706':'#1d4ed8';
+    const periodoTexto=filtroMes==='all'?'Acumulado total':(selMes?.options[selMes.selectedIndex]?.text||filtroMes);
+    objEl.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:#0f172a">🎯 Progreso vs Objetivo mensual</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px">${periodoTexto}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:28px;font-weight:900;color:${colorBar};font-family:var(--display)">${progObjetivo}%</div>
+          <div style="font-size:12px;color:#94a3b8">${total} / ${objetivo} leads</div>
+        </div>
+      </div>
+      <div style="height:10px;background:#f1f5f9;border-radius:5px;overflow:hidden">
+        <div style="height:100%;width:${barW}%;background:${colorBar};border-radius:5px;transition:width .6s"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px">
+        <span style="font-size:11px;color:#94a3b8">0</span>
+        <span style="font-size:11px;color:#94a3b8">Objetivo: ${objetivo} leads</span>
+      </div>`;
+  }
+
+  // Alertas
+  const alertas=[];
+  const sinG=leads.filter(x=>x.estado==='Sin gestionar').length;
+  if(sinG>5) alertas.push({i:'⚠️',t:`${sinG} leads sin gestionar`,c:'#e63946'});
+  if(convP<20&&total>10) alertas.push({i:'📉',t:`Conversión leads→prospectos baja (${convP}%)`,c:'#f59e0b'});
+  if(progObjetivo>=100) alertas.push({i:'🏆',t:`¡Objetivo cumplido! ${total}/${objetivo} leads`,c:'#059669'});
+  if(progObjetivo<50&&filtroMes!=='all') alertas.push({i:'🎯',t:`Faltan ${objetivo-total} leads para el objetivo`,c:'#1d4ed8'});
+  const alertEl=document.getElementById('hunt-alertas');
+  if(alertEl) alertEl.innerHTML=alertas.length?alertas.map(a=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-left:3px solid ${a.c};background:${a.c}08;border-radius:0 8px 8px 0;margin-bottom:8px;font-size:13px">
+      ${a.i} ${a.t}
+    </div>`).join(''):'<div style="color:#94a3b8;font-size:13px;padding:12px">Sin alertas activas ✅</div>';
+}
+
 loadDB();
 </script>
 
