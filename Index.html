@@ -282,7 +282,7 @@ tr:hover td{background:#ffffff04;}
   <div class="sb-sec">Flujo Hunter</div>
   <div class="nav-item" onclick="showTab('traspaso',this)"><span class="nav-ico">🔄</span><span>Traspaso</span><span class="nav-badge nb-teal" id="nb-traspaso" style="background:var(--teal);color:#fff">0</span></div>
   <div class="nav-item" onclick="showTab('activadores',this)"><span class="nav-ico">⚡</span><span>Activadores</span></div>
-  <div class="nav-item" onclick="showTab('zonas',this)"><span class="nav-ico">📍</span><span>Mis Zonas</span></div>
+  
 
   <div class="sb-sec">Análisis</div>
   <div class="nav-item" onclick="showTab('campanas',this)"><span class="nav-ico">📢</span><span>Campañas</span></div>
@@ -1485,7 +1485,7 @@ function abrirModalActivador(){
 }
 function cerrarModalActivador(){document.getElementById('modal-activador').classList.remove('open');}
 async function guardarActivador(){
-  const nombre=document.getElementById('af-nombre').value.trim();
+  const nombre=document.getElementById('af-nombre')?.value?.trim();
   if(!nombre){toast('El nombre es obligatorio','red');return;}
   const wp=document.getElementById('af-wp')?.value?.trim()||'';
   const email=document.getElementById('af-email')?.value?.trim()||'';
@@ -1493,103 +1493,22 @@ async function guardarActivador(){
   const color=document.getElementById('af-color')?.value||'#10b981';
   const checks=document.querySelectorAll('#af-zonas-checks input[type=checkbox]:checked');
   const zonas=Array.from(checks).map(c=>c.value);
-  const id=editActId||uid();
+  const id=editActId||('a'+Date.now());
   const act={id,nombre,wp,email,zonas,rubro,color};
-  await sbSaveActivador(act);
-  const idx=DB.activadores.findIndex(a=>a.id===id);
-  if(idx>=0)DB.activadores[idx]=act;else DB.activadores.push(act);
-  cerrarModalActivador();renderActivadores();
-  toast(editActId?'Activador actualizado':'Activador creado');
+  try{
+    const{error}=await sb.from('activadores').upsert({
+      id:act.id,nombre:act.nombre,wp:act.wp,email:act.email,
+      zonas:act.zonas,rubro:act.rubro,color:act.color
+    });
+    if(error){console.error(error);toast('Error al guardar en Supabase: '+error.message,'red');return;}
+  }catch(e){console.error(e);toast('Error de conexión','red');return;}
+  const idx2=DB.activadores.findIndex(a=>a.id===id);
+  if(idx2>=0)DB.activadores[idx2]=act;else DB.activadores.push(act);
+  cerrarModalActivador();
+  renderActivadores();
+  toast(editActId?'Activador actualizado ✅':'Activador creado ✅');
+  editActId=null;
 }
-function selZona(id){
-  selZonaId=id;
-  renderZonas();
-  const z=getZona(id),ls=DB.leads.filter(x=>x.zonaId===id);
-  document.getElementById('zona-detail-wrap').style.display='block';
-  document.getElementById('zona-detail').innerHTML=`
-    <div class="panel-title" style="color:${z.color}">${z.label}</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
-      ${[{v:ls.length,l:'Leads',c:z.color},{v:ls.filter(x=>x.estado==='Activado').length,l:'Activos',c:'#10b981'},{v:ls.filter(x=>x.estado==='En capacitación').length,l:'Capacitando',c:'#f97316'},{v:ls.filter(x=>x.estado==='Perdido').length,l:'Perdidos',c:'#e63946'}]
-        .map(s=>`<div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;flex:1;min-width:70px"><div style="font-family:var(--mono);font-size:17px;font-weight:600;color:${s.c}">${s.v}</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase;margin-top:2px">${s.l}</div></div>`).join('')}
-    </div>
-    <table style="font-size:12px"><thead><tr><th>Razón Social</th><th>Estado</th></tr></thead>
-    <tbody>${ls.slice(0,8).map(x=>`<tr><td style="font-weight:600">${x.nombre}</td><td><span class="pill ${EST_CLASS[x.estado]||'p-new'}">${x.estado}</span></td></tr>`).join('')}</tbody></table>`;
-  dc('ch-zona');
-  charts['ch-zona']=new Chart(document.getElementById('ch-zona'),{
-    type:'bar',
-    data:{labels:ESTADOS,datasets:[{label:'Leads',data:ESTADOS.map(e=>ls.filter(x=>x.estado===e).length),backgroundColor:ESTADOS.map(e=>EST_COLOR[e]+'cc'),borderRadius:5}]},
-    options:{...CHO,plugins:{legend:{display:false}}}
-  });
-}
-function abrirModalZona(){document.getElementById('zf-nombre').value='';document.getElementById('modal-zona').classList.add('open');}
-function cerrarModalZona(){document.getElementById('modal-zona').classList.remove('open');}
-function guardarZona(){
-  const nombre=document.getElementById('zf-nombre').value.trim();
-  if(!nombre){toast('Ingresá un nombre para la zona','red');return;}
-  DB.zonas.push({id:uid(),label:nombre,color:document.getElementById('zf-color').value,hunterId:document.getElementById('zf-hunter').value});
-  save();cerrarModalZona();renderZonas();toast('Zona creada 📍');
-}
-function borrarZona(id){
-  if(!confirm('¿Eliminar esta zona? Los leads asociados quedarán sin zona.')) return;
-  DB.zonas=DB.zonas.filter(z=>z.id!==id);
-  DB.leads.forEach(l=>{if(l.zonaId===id) l.zonaId='';});
-  save();renderZonas();toast('Zona eliminada');
-}
-
-// ════════════════════════════════════════════════
-// DRAWER / FICHA LEAD
-// ════════════════════════════════════════════════
-function abrirDrawer(id){
-  const l=DB.leads.find(x=>x.id===id);
-  if(!l) return;
-  const h=getHunter(l.hunterId),z=getZona(l.zonaId),a=getActivador(l.activadorId);
-  const ec=EST_COLOR[l.estado]||'#555';
-  document.getElementById('dr-ava').style.cssText=`background:${ec}22;color:${ec}`;
-  document.getElementById('dr-ava').textContent=ini(l.nombre);
-  document.getElementById('dr-nombre').textContent=l.nombre;
-  document.getElementById('dr-cuit').textContent=fmtCuit(l.cuit)||'Sin CUIT';
-  document.getElementById('dr-status-wrap').innerHTML=`<span class="pill ${EST_CLASS[l.estado]||'p-new'}">${l.estado}</span>`;
-
-  const stateBtns=ESTADOS.map(e=>`<button onclick="cambiarEstado('${l.id}','${e}')" style="background:${l.estado===e?EST_COLOR[e]+'33':'var(--card2)'};border:1px solid ${l.estado===e?EST_COLOR[e]:'var(--border)'};border-radius:6px;padding:5px 9px;color:${l.estado===e?EST_COLOR[e]:'var(--text2)'};font-size:10px;font-weight:700;cursor:pointer;font-family:var(--sans)">${e}</button>`).join('');
-
-  document.getElementById('dr-body').innerHTML=`
-    <div class="dr-sec">
-      <div class="dr-sec-title">Cambiar estado</div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap">${stateBtns}</div>
-      <div style="margin-top:10px"><input id="estado-obs-input" type="text" placeholder="Observación del cambio (opcional)..." style="width:100%;background:#f5f7fb;border:1px solid #dde3ec;border-radius:7px;padding:8px 11px;color:#0f172a;font-size:12px;outline:none;font-family:var(--sans)"></div>
-      ${l.estado==='Listo para activar'&&!l.activadorId?`<div style="margin-top:10px"><button onclick="cerrarDrawer();abrirModalTraspaso('${l.id}')" style="background:var(--teal);border:none;border-radius:8px;padding:8px 16px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--sans);width:100%">🔄 Asignar a Activador Comercial</button></div>`:''}
-    </div>
-    <div class="dr-sec">
-      <div class="dr-sec-title">Datos del lead</div>
-      <div class="field-grid">
-        <div class="field"><div class="field-lbl">Rubro</div><div class="field-val">${l.rubro||'—'}</div></div>
-        <div class="field"><div class="field-lbl">Contacto</div><div class="field-val" style="font-size:12px">${l.contacto||'—'}</div></div>
-        <div class="field"><div class="field-lbl">WhatsApp</div><div class="field-val">${l.wp||'—'}</div></div>
-        <div class="field"><div class="field-lbl">Email</div><div class="field-val" style="font-size:11px">${l.email||'—'}</div></div>
-        <div class="field"><div class="field-lbl">Hunter</div><div class="field-val" style="color:${h.color||'#888'}">${h.nombre||'—'}</div></div>
-        <div class="field"><div class="field-lbl">Zona</div><div class="field-val" style="color:${z.color||'#888'}">${z.label||'—'}</div></div>
-        <div class="field"><div class="field-lbl">Capacitaciones</div><div class="field-val" style="color:#f97316;font-family:var(--mono)">🎓 ${l.capacitaciones||0} sesiones</div></div>
-        <div class="field"><div class="field-lbl">Activador</div><div class="field-val" style="color:${l.activadorId?'var(--teal)':'var(--text3)'}">${a.nombre||'Sin asignar'}</div></div>
-        ${l.monto?`<div class="field"><div class="field-lbl">Monto</div><div class="field-val" style="color:#fbbf24;font-family:var(--mono)">$${l.monto.toLocaleString()}</div></div>`:''}
-        ${l.motivo?`<div class="field" style="border-color:#e6394655"><div class="field-lbl" style="color:#e63946">Motivo pérdida</div><div class="field-val">${l.motivo}</div></div>`:''}
-        ${l.obs?`<div class="field full"><div class="field-lbl">Notas de capacitación</div><div class="field-val" style="font-size:11px;line-height:1.5">${l.obs}</div></div>`:''}
-      </div>
-    </div>
-    <div class="dr-sec">
-      <div class="dr-sec-title">Historial de interacciones</div>
-      ${(l.historial||[]).slice().reverse().map(h=>`
-        <div class="hist-item">
-          <div class="hist-dot" style="background:${h.a.includes('Traspas')||h.a.includes('🔄')?'#06b6d4':h.a.includes('alta')||h.a.includes('Activ')?'#10b981':h.a.includes('perdido')||h.a.includes('❌')?'#e63946':h.a.includes('capac')||h.a.includes('🎓')?'#f97316':'#3b82f6'}"></div>
-          <div><div class="hist-action">${h.a}</div><div class="hist-detail">${h.d}</div><div class="hist-time">${h.f}</div></div>
-        </div>`).join('')}
-      <div style="margin-top:10px;display:flex;gap:7px">
-        <input id="new-hist" type="text" placeholder="Registrar interacción o sesión de capacitación..." style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--text);font-size:11px;font-family:var(--sans);outline:none"/>
-        <button onclick="addHist('${l.id}')" style="background:var(--accent);border:none;border-radius:7px;padding:7px 12px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--sans)">+</button>
-      </div>
-    </div>`;
-  document.getElementById('drawer-overlay').classList.add('open');
-}
-function cerrarDrawer(){document.getElementById('drawer-overlay').classList.remove('open');}
 async function cambiarEstado(id,estado){
   const l=DB.leads.find(x=>x.id===id);if(!l)return;
   const obs=document.getElementById('estado-obs-input')?.value?.trim()||'';
@@ -1736,185 +1655,86 @@ function renderPerdidas(){
 // ════════════════════════════════════════════════
 function renderPedidos(){
   const l=DB.leads;
-  const act=l.filter(x=>x.estado==='Activado');
-  const conM=act.filter(x=>x.monto>0);
-  const monto=conM.reduce((s,x)=>s+x.monto,0);
-  const ticket=conM.length?monto/conM.length:0;
-  document.getElementById('ped-kpis').innerHTML=[
-    {val:l.length,lbl:'Total leads',c:'#3b82f6'},
-    {val:act.length,lbl:'Activados',c:'#10b981'},
-    {val:conM.length,lbl:'Con pedido',c:'#fbbf24'},
-    {val:'$'+(monto/1000).toFixed(1)+'K',lbl:'Monto total',c:'#8b5cf6'},
-    {val:'$'+(ticket/1000).toFixed(1)+'K',lbl:'Ticket prom.',c:'#06b6d4'},
-  ].map(k=>`<div class="kpi" style="--kc:${k.c}"><div class="kpi-val">${k.val}</div><div class="kpi-lbl">${k.lbl}</div></div>`).join('');
-  const total=l.length||1;
-  document.getElementById('funnel-container').innerHTML=[
+  const prospectos=l.filter(x=>x.estado==='Prospecto').length;
+  const altas=l.filter(x=>x.estado==='Alta de cliente').length;
+  const capacitacion=l.filter(x=>x.estado==='Capacitación').length;
+  const pedido=l.filter(x=>x.estado==='Primer Pedido').length;
+  const totalAltas=altas+capacitacion+pedido;
+  const monto=l.reduce((a,x)=>a+(+x.monto||0),0);
+  const ticket=pedido?Math.round(monto/pedido):0;
+
+  // KPIs
+  const kEl=document.getElementById('ped-kpis');
+  if(kEl) kEl.innerHTML=[
+    {v:prospectos,l:'Prospectos',c:'#0891b2',i:'🎯',sub:'cumplieron condiciones'},
+    {v:totalAltas,l:'Total Altas',c:'#7c3aed',i:'🏷️',sub:'Alta+Cap.+1er Pedido'},
+    {v:pedido,l:'Con 1er Pedido',c:'#d97706',i:'📦',sub:'primer compra realizada'},
+    {v:'$'+(monto/1000).toFixed(1)+'K',l:'Monto total',c:'#059669',i:'💰',sub:'acumulado'},
+    {v:'$'+ticket.toLocaleString('es-AR'),l:'Ticket promedio',c:'#1d4ed8',i:'📊',sub:'por pedido'},
+  ].map(k=>`<div class="kpi" style="--kc:${k.c}">
+    <div style="font-size:18px;margin-bottom:4px">${k.i}</div>
+    <div class="kpi-val">${k.v}</div>
+    <div class="kpi-lbl">${k.l}</div>
+    <div style="font-size:10px;color:var(--text3);margin-top:2px">${k.sub}</div>
+  </div>`).join('');
+
+  // Embudo
+  const maxV=Math.max(l.length,1);
+  const fEl=document.getElementById('ped-embudo');
+  if(fEl) fEl.innerHTML=[
     {l:'Leads importados',v:l.length,c:'#3b82f6'},
-    {l:'Contactados',v:l.filter(x=>x.estado!=='Sin gestionar').length,c:'#8b5cf6'},
-    {l:'Capacitados',v:l.filter(x=>['En capacitación','Listo para activar','Activado'].includes(x.estado)).length,c:'#f97316'},
-    {l:'Traspasados / Activados',v:act.length,c:'#10b981'},
-    {l:'Con primer pedido',v:conM.length,c:'#fbbf24'},
-  ].map(s=>`<div class="funnel-row"><div class="funnel-labels"><span style="font-weight:600">${s.l}</span><span style="font-family:var(--mono);color:${s.c};font-weight:600">${s.v}</span></div><div class="funnel-bg"><div class="funnel-fill" style="background:${s.c};width:${s.v/total*100}%"></div></div></div>`).join('');
-  dc('ch-ped-sem');
-  const sw=[{s:'Sem 1',v:1},{s:'Sem 2',v:3},{s:'Sem 3',v:2},{s:'Sem 4',v:4},{s:'Sem 5',v:3},{s:'Sem 6',v:conM.length}];
-  charts['ch-ped-sem']=new Chart(document.getElementById('ch-ped-sem'),{type:'bar',data:{labels:sw.map(x=>x.s),datasets:[{label:'Pedidos',data:sw.map(x=>x.v),backgroundColor:'#10b98188',borderRadius:5}]},options:{...CHO,plugins:{legend:{display:false}}}});
-  document.getElementById('tbody-pedidos').innerHTML=conM.slice(0,10).map(l=>{
-    const a=getActivador(l.activadorId);
-    return`<tr><td style="font-weight:600">${l.nombre}</td><td style="font-family:var(--mono);font-size:10px;color:var(--text3)">${fmtCuit(l.cuit)||'—'}</td><td style="font-size:12px;color:${getHunter(l.hunterId).color||'#888'}">${getHunter(l.hunterId).nombre||'—'}</td><td>${a.nombre?`<span class="pill p-activ">⚡ ${a.nombre}</span>`:'—'}</td><td style="font-size:11px;color:var(--text3)">${l.fechaTraspaso||l.fechaAlta||'—'}</td><td style="font-family:var(--mono);color:#fbbf24">$${l.monto.toLocaleString()}</td></tr>`;}).join('');
-}
+    {l:'Prospectos',v:prospectos,c:'#0891b2'},
+    {l:'Total altas de cliente',v:totalAltas,c:'#7c3aed'},
+    {l:'Con primer pedido',v:pedido,c:'#d97706'},
+  ].map(s=>`
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+        <span style="font-size:13px;color:var(--text2)">${s.l}</span>
+        <span style="font-size:13px;font-weight:700;color:${s.c}">${s.v}</span>
+      </div>
+      <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${Math.round(s.v/maxV*100)}%;background:${s.c};border-radius:4px;transition:width .5s"></div>
+      </div>
+    </div>`).join('');
 
-// ════════════════════════════════════════════════
-// HUNTERS KPI
-// ════════════════════════════════════════════════
-function renderHunters(){
-  const l=DB.leads;
-
-  // ── Poblar selector de meses ──────────────────
-  const selMes=document.getElementById('hunt-filtro-mes');
-  if(selMes){
-    const meses=new Set();
-    l.forEach(x=>{
-      const f=x.fechaContacto||x.fechaAlta||'';
-      if(f) meses.add(f.slice(0,7));
-    });
-    const sorted=[...meses].sort().reverse();
-    // Reconstruir opciones
-    const curVal=selMes.value;
-    selMes.innerHTML='<option value="all">Acumulado total</option>';
-    sorted.forEach(m=>{
-      const [y,mo]=m.split('-');
-      const label=new Date(y,mo-1).toLocaleString('es-AR',{month:'long',year:'numeric'});
-      selMes.innerHTML+=`<option value="${m}">${label.charAt(0).toUpperCase()+label.slice(1)}</option>`;
-    });
-    if(curVal) selMes.value=curVal;
-  }
-
-  // ── Filtrar por mes ───────────────────────────
-  const filtroMes=selMes?.value||'all';
-  const leads=filtroMes==='all'?l:l.filter(x=>{
-    const f=x.fechaContacto||x.fechaAlta||'';
-    return f.startsWith(filtroMes);
+  // Pedidos por semana
+  const semanas={};
+  l.filter(x=>x.estado==='Primer Pedido'&&x.fechaTraspaso).forEach(x=>{
+    const d=new Date(x.fechaTraspaso);
+    const sem=`Sem ${Math.ceil(d.getDate()/7)}`;
+    semanas[sem]=(semanas[sem]||0)+1;
   });
-
-  // ── Período label ─────────────────────────────
-  const periodoEl=document.getElementById('hunt-periodo-label');
-  if(periodoEl) periodoEl.textContent=filtroMes==='all'?
-    `Total acumulado · ${leads.length} leads`:`Mostrando ${leads.length} leads del período`;
-
-  // ── Métricas base ─────────────────────────────
-  const total=leads.length;
-  const prospectos=leads.filter(x=>x.estado==='Prospecto').length;
-  const altas=leads.filter(x=>x.estado==='Alta de cliente').length;
-  const capacitacion=leads.filter(x=>x.estado==='Capacitación').length;
-  const primerPedido=leads.filter(x=>x.estado==='Primer Pedido').length;
-  const perdidos=leads.filter(x=>x.estado==='Perdido').length;
-  const clientes=altas+capacitacion+primerPedido; // clientes totales
-  const objetivo=+(document.getElementById('hunt-objetivo')?.value||50);
-
-  // Conversiones
-  const convP=total?Math.round(prospectos/total*100):0;
-  const convC=prospectos?Math.round(clientes/prospectos*100):0;
-  const convPP=clientes?Math.round(primerPedido/clientes*100):0;
-  const progObjetivo=objetivo?Math.round(total/objetivo*100):0;
-
-  // ── KPIs principales ─────────────────────────
-  const kpiEl=document.getElementById('hunt-kpis-nuevo');
-  if(kpiEl) kpiEl.innerHTML=[
-    {v:total,l:'Total leads',i:'👤',c:'#1d4ed8'},
-    {v:prospectos,l:'Prospectos',i:'🎯',c:'#0891b2'},
-    {v:clientes,l:'Clientes',i:'🏷️',c:'#7c3aed',sub:'Alta+Cap.+Pedido'},
-    {v:primerPedido,l:'Primer Pedido',i:'📦',c:'#d97706'},
-    {v:perdidos,l:'Perdidos',i:'🚫',c:'#e63946'},
-    {v:progObjetivo+'%',l:'Prog. objetivo',i:'🎯',c:progObjetivo>=100?'#059669':'#f59e0b',sub:`${total}/${objetivo} leads`},
-  ].map(k=>`
-    <div style="background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:16px;border-top:3px solid ${k.c}">
-      <div style="font-size:20px;margin-bottom:6px">${k.i}</div>
-      <div style="font-size:28px;font-weight:900;color:${k.c};font-family:var(--display)">${k.v}</div>
-      <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-top:4px">${k.l}</div>
-      ${k.sub?`<div style="font-size:10px;color:#94a3b8;margin-top:2px">${k.sub}</div>`:''}
-    </div>`).join('');
-
-  // ── Embudos de conversión ────────────────────
-  const embudoEl=document.getElementById('hunt-embudos');
-  if(embudoEl) embudoEl.innerHTML=[
-    {title:'Leads → Prospectos',steps:[{l:'Total leads',v:total,c:'#3b82f6'},{l:'Prospectos',v:prospectos,c:'#0891b2'}],pct:convP+'%',c:'#0891b2'},
-    {title:'Prospectos → Clientes',steps:[{l:'Prospectos',v:prospectos,c:'#0891b2'},{l:'Clientes',v:clientes,c:'#7c3aed'}],pct:convC+'%',c:'#7c3aed'},
-    {title:'Clientes → Primer Pedido',steps:[{l:'Clientes',v:clientes,c:'#7c3aed'},{l:'1er Pedido',v:primerPedido,c:'#d97706'}],pct:convPP+'%',c:'#d97706'},
-  ].map(e=>`
-    <div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:18px">
-      <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px">${e.title}</div>
-      ${e.steps.map((s,i)=>`
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:${i<e.steps.length-1?'8px':'0'}">
-          <div style="width:10px;height:10px;border-radius:50%;background:${s.c};flex-shrink:0"></div>
-          <div style="flex:1;font-size:13px;color:#475569">${s.l}</div>
-          <div style="font-size:16px;font-weight:700;color:${s.c}">${s.v}</div>
-        </div>
-        ${i<e.steps.length-1?`<div style="margin:0 0 8px 20px;height:1px;background:#f1f5f9"></div>`:''}
-      `).join('')}
-      <div style="margin-top:14px;padding-top:12px;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:11px;color:#94a3b8">Conversión</span>
-        <span style="font-size:22px;font-weight:900;color:${e.c};font-family:var(--display)">${e.pct}</span>
-      </div>
-    </div>`).join('');
-
-  // ── Gráficos de torta ────────────────────────
-  function drawPie(id,labelId,subId,val,total2,color,label,sub){
-    const canvas=document.getElementById(id);if(!canvas)return;
-    const ctx=canvas.getContext('2d');
-    const pct=total2?Math.round(val/total2*100):0;
-    if(window['chart_'+id]) window['chart_'+id].destroy();
-    window['chart_'+id]=new Chart(ctx,{
-      type:'doughnut',
-      data:{datasets:[{data:[val,Math.max(0,total2-val)],backgroundColor:[color,'#f1f5f9'],borderWidth:0,borderRadius:4}]},
-      options:{cutout:'72%',animation:{duration:600},plugins:{legend:{display:false},tooltip:{enabled:false}}}
+  const semKeys=Object.keys(semanas).sort();
+  if(window.chartPedSem) window.chartPedSem.destroy();
+  const cEl=document.getElementById('ch-ped-sem');
+  if(cEl&&semKeys.length){
+    window.chartPedSem=new Chart(cEl.getContext('2d'),{
+      type:'bar',
+      data:{labels:semKeys,datasets:[{data:semKeys.map(k=>semanas[k]),backgroundColor:'#10b98180',borderColor:'#10b981',borderWidth:2,borderRadius:6}]},
+      options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}
     });
-    const lEl=document.getElementById(labelId);
-    const sEl=document.getElementById(subId);
-    if(lEl) lEl.textContent=pct+'%';
-    if(sEl) sEl.textContent=sub;
-  }
-  drawPie('ch-conv1','ch-conv1-label','ch-conv1-sub',prospectos,total,'#0891b2','',''+prospectos+' de '+total);
-  drawPie('ch-conv2','ch-conv2-label','ch-conv2-sub',clientes,Math.max(prospectos,1),'#7c3aed','',''+clientes+' de '+prospectos);
-  drawPie('ch-conv3','ch-conv3-label','ch-conv3-sub',primerPedido,Math.max(clientes,1),'#d97706','',''+primerPedido+' de '+clientes);
-
-  // ── Panel objetivo ───────────────────────────
-  const objEl=document.getElementById('hunt-objetivo-panel');
-  if(objEl){
-    const barW=Math.min(progObjetivo,100);
-    const colorBar=progObjetivo>=100?'#059669':progObjetivo>=75?'#d97706':'#1d4ed8';
-    objEl.innerHTML=`
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-        <div>
-          <div style="font-size:14px;font-weight:700;color:#0f172a">🎯 Progreso vs Objetivo mensual</div>
-          <div style="font-size:12px;color:#94a3b8;margin-top:2px">${filtroMes==='all'?'Acumulado total':selMes?.options[selMes.selectedIndex]?.text||filtroMes}</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:28px;font-weight:900;color:${colorBar};font-family:var(--display)">${progObjetivo}%</div>
-          <div style="font-size:12px;color:#94a3b8">${total} / ${objetivo} leads</div>
-        </div>
-      </div>
-      <div style="height:12px;background:#f1f5f9;border-radius:6px;overflow:hidden">
-        <div style="height:100%;width:${barW}%;background:${colorBar};border-radius:6px;transition:width .6s"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-top:8px">
-        <span style="font-size:11px;color:#94a3b8">0</span>
-        <span style="font-size:11px;color:#94a3b8">Objetivo: ${objetivo} leads</span>
-      </div>`;
   }
 
-  // ── Alertas ───────────────────────────────────
-  const h=DB.hunters[0];
-  const alertas=[];
-  const sinG=leads.filter(x=>x.estado==='Sin gestionar').length;
-  if(sinG>5) alertas.push({i:'⚠️',t:`${sinG} leads sin gestionar — requieren contacto urgente`,c:'#e63946'});
-  if(convP<20&&total>10) alertas.push({i:'📉',t:`Conversión leads→prospectos baja (${convP}%) — revisar criterios`,c:'#f59e0b'});
-  if(progObjetivo>=100) alertas.push({i:'🏆',t:`¡Objetivo del mes cumplido! ${total}/${objetivo} leads`,c:'#059669'});
-  if(progObjetivo<50&&filtroMes!=='all') alertas.push({i:'🎯',t:`Faltan ${objetivo-total} leads para cumplir el objetivo`,c:'#1d4ed8'});
-  const alertEl=document.getElementById('hunt-alertas');
-  if(alertEl) alertEl.innerHTML=alertas.length?alertas.map(a=>`
-    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-left:3px solid ${a.c};background:${a.c}08;border-radius:0 8px 8px 0;margin-bottom:8px;font-size:13px;color:#0f172a">
-      <span>${a.i}</span><span>${a.t}</span>
-    </div>`).join(''):'<div style="color:#94a3b8;font-size:13px;padding:12px">Sin alertas activas ✅</div>';
+  // Tabla clientes con primer pedido
+  const pedidos=l.filter(x=>x.estado==='Primer Pedido');
+  const tEl=document.getElementById('ped-tabla');
+  if(tEl) tEl.innerHTML=pedidos.length?`
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr>${['Razón Social','CUIT','N° Cliente','Monto','Zona','Activador','Fecha'].map(h=>`<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)">${h}</th>`).join('')}</tr></thead>
+      <tbody>${pedidos.map(x=>{
+        const z=getZona(x.zonaId);const a=getActivador(x.activadorId);
+        return`<tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:10px 12px;font-weight:600;font-size:13px">${x.nombre}</td>
+          <td style="padding:10px 12px;font-size:12px;color:var(--text2);font-family:var(--mono)">${x.cuit||'—'}</td>
+          <td style="padding:10px 12px;font-size:12px;color:#d97706;font-weight:700">${x.nroCliente||'—'}</td>
+          <td style="padding:10px 12px;font-size:13px;color:#059669;font-weight:700">${x.monto?'$'+Number(x.monto).toLocaleString('es-AR'):'—'}</td>
+          <td style="padding:10px 12px;font-size:12px;color:var(--text2)">${z.label||'—'}</td>
+          <td style="padding:10px 12px;font-size:12px;color:var(--text2)">${a.nombre||'—'}</td>
+          <td style="padding:10px 12px;font-size:12px;color:var(--text3)">${x.fechaTraspaso||'—'}</td>
+        </tr>`;}).join('')}
+      </tbody>
+    </table>
+  `:'<div style="text-align:center;padding:40px;color:var(--text3)">Sin clientes con primer pedido aún</div>';
 }
 function triggerImportFile(){
   initImportInput();
