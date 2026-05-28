@@ -380,7 +380,7 @@ tr:hover td{background:#ffffff04;}
       <div class="panel">
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Razón Social</th><th>CUIT</th><th>Estado</th><th>Hunter</th><th>Zona</th><th>Activador</th><th>Provincia</th><th>Localidad</th><th>Último contacto</th><th>Acciones</th></tr></thead>
+            <thead><tr><th>Razón Social</th><th>CUIT</th><th>Campaña</th><th>Estado</th><th>Hunter</th><th>Zona</th><th>Activador</th><th>Provincia</th><th>Localidad</th><th>Último contacto</th><th>Acciones</th></tr></thead>
             <tbody id="tbody-leads"></tbody>
           </table>
         </div>
@@ -468,6 +468,7 @@ tr:hover td{background:#ffffff04;}
     <!-- CAMPAÑAS -->
     <div class="tab-panel" id="tab-campanas">
       <div class="kpi-row" id="camp-kpis"></div>
+      <div id="camp-filtros" style="margin-bottom:14px"></div>
       <div id="camp-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:14px;"></div>
       <div class="grid2">
         <div class="panel"><div class="panel-title">Tasa de conversión</div><canvas id="ch-camp-conv" height="200"></canvas></div>
@@ -634,6 +635,10 @@ tr:hover td{background:#ffffff04;}
       <div class="fg"><label>Hunter asignado</label><select id="lf-hunter"></select></div>
       <div class="fg"><label>Zona</label><select id="lf-zona"></select></div>
       <div class="fg"><label>Activador (si ya tiene)</label><select id="lf-activador"></select></div>
+      <div class="fg"><label>📣 Campaña</label>
+        <input id="lf-campana" type="text" placeholder="Ej: Meta Ads Mayo 2026..." list="campanas-list" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-size:13px;outline:none;font-family:var(--sans);width:100%"/>
+        <datalist id="campanas-list"></datalist>
+      </div>
       <div class="fg"><label>Motivo de pérdida</label>
         <select id="lf-motivo"><option value="">— (no aplica) —</option><option>Precio</option><option>Competencia</option><option>Sin interés</option><option>Sin contacto</option><option>Ya tiene proveedor</option><option>Zona sin cobertura</option><option>Otro</option></select>
       </div>
@@ -1172,6 +1177,7 @@ function renderLeads(){
     return`<tr>
       <td><div style="font-weight:700">${l.nombre}</div><div style="font-size:10px;color:var(--text3)">${l.rubro||''}${l.contacto?' · '+l.contacto:''}</div></td>
       <td style="font-family:var(--mono);font-size:11px;color:var(--text3)">${fmtCuit(l.cuit)||'—'}</td>
+      <td style="font-size:11px;color:#0891b2;font-weight:600;white-space:nowrap">${l.campana?'📣 '+l.campana.substring(0,20)+(l.campana.length>20?'…':''):'—'}</td>
       <td><span class="pill ${EST_CLASS[l.estado]||'p-new'}">${l.estado}</span></td>
       <td><span style="color:${h.color||'#888'};font-size:12px;font-weight:600">${h.nombre||'—'}</span></td>
       <td><span style="color:${z.color||'#888'};font-size:11px;font-weight:600">${z.label||'—'}</span></td>
@@ -1324,7 +1330,7 @@ function agregarLeadPipeline(){
   const z=DB.zonas.find(z=>z.hunterId===hid)||DB.zonas[0];
   DB.leads.unshift({
     id:uid(),nombre,cuit,rubro:'',wp:'',email:'',contacto:'',
-    estado:'Sin gestionar',campana:CAMPANAS[0],
+    estado:'Sin gestionar',campana:(document.getElementById('lf-campana')?.value?.trim()||CAMPANAS[0]),
     zonaId:z?.id||'',hunterId:hid,
     activadorId:null,motivo:'',monto:0,
     fechaAlta:'',fechaTraspaso:'',fechaContacto:hoy(),
@@ -1530,6 +1536,13 @@ async function addHist(id){
 // MODAL LEAD
 // ════════════════════════════════════════════════
 function poblarSelectsLead(){
+  // Poblar datalist de campañas con las existentes en la base
+  const dl=document.getElementById('campanas-list');
+  if(dl){
+    const campSet=new Set(DB.leads.map(l=>l.campana).filter(Boolean));
+    CAMPANAS.forEach(c=>campSet.add(c));
+    dl.innerHTML=[...campSet].map(c=>`<option value="${c}">`).join('');
+  }
   document.getElementById('lf-estado').innerHTML=ESTADOS.map(e=>`<option value="${e}">${e}</option>`).join('');
   document.getElementById('lf-hunter').innerHTML=DB.hunters.map(h=>`<option value="${h.id}">${h.nombre}</option>`).join('');
   document.getElementById('lf-zona').innerHTML=DB.zonas.map(z=>`<option value="${z.id}">${z.label}</option>`).join('');
@@ -1563,6 +1576,8 @@ function editarLead(id){
   document.getElementById('lf-zona').value=l.zonaId;
   document.getElementById('lf-activador').value=l.activadorId||'';
   document.getElementById('lf-motivo').value=l.motivo||'';
+  const campEl=document.getElementById('lf-campana');
+  if(campEl) campEl.value=l.campana||'';
   document.getElementById('modal-lead').classList.add('open');
 }
 function cerrarModalLead(){document.getElementById('modal-lead').classList.remove('open');}
@@ -1582,7 +1597,7 @@ async function guardarLead(){
     leadGuardar=l;
     toast('Lead actualizado');
   } else {
-    const nuevoLead={id:uid(),nombre,cuit,wp:document.getElementById('lf-wp').value,rubro:document.getElementById('lf-rubro').value,contacto:document.getElementById('lf-contacto').value,email:document.getElementById('lf-email').value,obs:document.getElementById('lf-obs').value,monto:+document.getElementById('lf-monto').value||0,estado:document.getElementById('lf-estado').value,hunterId:document.getElementById('lf-hunter').value,zonaId:document.getElementById('lf-zona').value,activadorId:document.getElementById('lf-activador').value||null,motivo:document.getElementById('lf-motivo').value,campana:CAMPANAS[0],fechaAlta:'',fechaTraspaso:'',fechaContacto:hoy(),capacitaciones:0,localidad:'',provincia:'',nroCliente:'',nroFactura:'',historial:[{a:'Lead creado manualmente',d:CAMPANAS[0],f:hoy()}]};
+    const nuevoLead={id:uid(),nombre,cuit,wp:document.getElementById('lf-wp').value,rubro:document.getElementById('lf-rubro').value,contacto:document.getElementById('lf-contacto').value,email:document.getElementById('lf-email').value,obs:document.getElementById('lf-obs').value,monto:+document.getElementById('lf-monto').value||0,estado:document.getElementById('lf-estado').value,hunterId:document.getElementById('lf-hunter').value,zonaId:document.getElementById('lf-zona').value,activadorId:document.getElementById('lf-activador').value||null,motivo:document.getElementById('lf-motivo').value,campana:(document.getElementById('lf-campana')?.value?.trim()||CAMPANAS[0]),fechaAlta:'',fechaTraspaso:'',fechaContacto:hoy(),capacitaciones:0,localidad:'',provincia:'',nroCliente:'',nroFactura:'',historial:[{a:'Lead creado manualmente',d:CAMPANAS[0],f:hoy()}]};
     DB.leads.unshift(nuevoLead);
     leadGuardar=nuevoLead;
     toast('Nuevo lead agregado 🎉');
@@ -1600,141 +1615,96 @@ async function borrarLead(id){
 // ════════════════════════════════════════════════
 function renderCampanas(){
   const l=DB.leads;
-  const cd=CAMPANAS.map(c=>{
-    const ls=l.filter(x=>x.campana===c);
-    const a=ls.filter(x=>x.estado==='Activado').length;
-    return{nombre:c,leads:ls.length,activ:a,tasa:ls.length?+(a/ls.length*100).toFixed(1):0};
-  }).sort((a,b)=>b.tasa-a.tasa);
-  const cols=['#3b82f6','#10b981','#8b5cf6','#fbbf24','#e63946'];
-  document.getElementById('camp-kpis').innerHTML=[
-    {val:l.length,lbl:'Total leads',c:'#3b82f6'},
-    {val:l.filter(x=>x.estado==='Activado').length,lbl:'Activados',c:'#10b981'},
-    {val:(l.length?+(l.filter(x=>x.estado==='Activado').length/l.length*100).toFixed(1):0)+'%',lbl:'Tasa global',c:'#fbbf24'},
-  ].map(k=>`<div class="kpi" style="--kc:${k.c}"><div class="kpi-val">${k.val}</div><div class="kpi-lbl">${k.lbl}</div></div>`).join('');
-  document.getElementById('camp-cards').innerHTML=cd.map((c,i)=>`
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div style="font-size:13px;font-weight:700">${c.nombre}</div>
-        <span style="background:${cols[i%5]}22;color:${cols[i%5]};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">${i===0?'🏆 Top':'#'+(i+1)}</span>
-      </div>
-      <div style="background:var(--border);border-radius:4px;height:5px;margin-bottom:6px"><div style="background:${cols[i%5]};width:${c.tasa}%;height:100%;border-radius:4px;transition:width 1s ease"></div></div>
-      <div style="display:flex;gap:12px">
-        <div><div style="font-family:var(--mono);font-size:14px;font-weight:600;color:${cols[i%5]}">${c.leads}</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase">Leads</div></div>
-        <div><div style="font-family:var(--mono);font-size:14px;font-weight:600;color:#10b981">${c.activ}</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase">Activ.</div></div>
-        <div><div style="font-family:var(--mono);font-size:14px;font-weight:600;color:#fbbf24">${c.tasa}%</div><div style="font-size:9px;color:var(--text3);text-transform:uppercase">Conv.</div></div>
-      </div>
-    </div>`).join('');
-  dc('ch-camp-conv');
-  charts['ch-camp-conv']=new Chart(document.getElementById('ch-camp-conv'),{type:'bar',data:{labels:cd.map(c=>c.nombre.split('—')[1]?.trim()||c.nombre),datasets:[{label:'%',data:cd.map(c=>c.tasa),backgroundColor:cols.map(c=>c+'cc'),borderRadius:5}]},options:{...CHO,plugins:{legend:{display:false}}}});
-  dc('ch-camp-vol');
-  charts['ch-camp-vol']=new Chart(document.getElementById('ch-camp-vol'),{type:'doughnut',data:{labels:cd.map(c=>c.nombre.split('—')[1]?.trim()||c.nombre),datasets:[{data:cd.map(c=>c.leads),backgroundColor:cols.map(c=>c+'cc'),borderWidth:2,borderColor:'#141720'}]},options:{plugins:{legend:{position:'bottom',labels:{color:'#8892a4',font:{family:'Space Grotesk',size:11},boxWidth:10}}},cutout:'50%'}});
-}
 
-// ════════════════════════════════════════════════
-// PÉRDIDAS
-// ════════════════════════════════════════════════
-function renderPerdidas(){
-  const perd=DB.leads.filter(x=>x.estado==='Perdido');
-  const mc={};perd.forEach(l=>{const m=l.motivo||'Otro';mc[m]=(mc[m]||0)+1;});
-  const mk=Object.keys(mc).sort((a,b)=>mc[b]-mc[a]);
-  const clrs=['#e63946','#f97316','#fbbf24','#8b5cf6','#3b82f6','#06b6d4','#10b981'];
-  document.getElementById('perd-kpis').innerHTML=[
-    {val:perd.length,lbl:'Total perdidos',c:'#e63946'},
-    {val:DB.leads.length?+(perd.length/DB.leads.length*100).toFixed(1)+'%':'0%',lbl:'Tasa pérdida',c:'#fbbf24'},
-    {val:mk[0]||'—',lbl:'Motivo #1',c:'#8b5cf6'},
-  ].map(k=>`<div class="kpi" style="--kc:${k.c}"><div class="kpi-val">${k.val}</div><div class="kpi-lbl">${k.lbl}</div></div>`).join('');
-  dc('ch-perd-pie');
-  charts['ch-perd-pie']=new Chart(document.getElementById('ch-perd-pie'),{type:'doughnut',data:{labels:mk,datasets:[{data:mk.map(m=>mc[m]),backgroundColor:clrs.map(c=>c+'cc'),borderWidth:2,borderColor:'#141720'}]},options:{plugins:{legend:{position:'bottom',labels:{color:'#8892a4',font:{family:'Space Grotesk',size:11},boxWidth:10}}},cutout:'55%'}});
-  dc('ch-perd-bar');
-  charts['ch-perd-bar']=new Chart(document.getElementById('ch-perd-bar'),{type:'bar',data:{labels:mk,datasets:[{label:'Leads',data:mk.map(m=>mc[m]),backgroundColor:clrs.map(c=>c+'aa'),borderRadius:5}]},options:{...CHO,indexAxis:'y',plugins:{legend:{display:false}}}});
-  document.getElementById('tbody-perdidas').innerHTML=perd.slice(0,10).map(l=>`<tr><td style="font-weight:600">${l.nombre}</td><td style="font-family:var(--mono);font-size:10px;color:var(--text3)">${fmtCuit(l.cuit)||'—'}</td><td><span style="color:#e63946;font-size:12px;font-weight:600">${l.motivo||'—'}</span></td><td style="font-size:12px;color:${getHunter(l.hunterId).color||'#888'}">${getHunter(l.hunterId).nombre||'—'}</td><td style="font-size:11px;color:var(--text3)">${l.fechaContacto||'—'}</td></tr>`).join('');
-}
+  // Obtener campañas únicas de los leads reales
+  const campSet=new Set(l.map(x=>x.campana).filter(Boolean));
+  CAMPANAS.forEach(c=>campSet.add(c));
+  const todasCampanas=[...campSet].filter(c=>l.some(x=>x.campana===c));
 
-// ════════════════════════════════════════════════
-// PRIMER PEDIDO
-// ════════════════════════════════════════════════
-function renderPedidos(){
-  const l=DB.leads;
-  const prospectos=l.filter(x=>x.estado==='Prospecto').length;
-  const altas=l.filter(x=>x.estado==='Alta de cliente').length;
-  const capacitacion=l.filter(x=>x.estado==='Capacitación').length;
-  const pedido=l.filter(x=>x.estado==='Primer Pedido').length;
-  const totalAltas=altas+capacitacion+pedido;
-  const monto=l.reduce((a,x)=>a+(+x.monto||0),0);
-  const ticket=pedido?Math.round(monto/pedido):0;
+  // Filtros
+  const filtroNombre=(document.getElementById('camp-filtro-nombre')?.value||'').toLowerCase();
+  const filtroFechaDesde=document.getElementById('camp-filtro-desde')?.value||'';
+  const filtroFechaHasta=document.getElementById('camp-filtro-hasta')?.value||'';
 
-  // KPIs
-  const kEl=document.getElementById('ped-kpis');
-  if(kEl) kEl.innerHTML=[
-    {v:prospectos,l:'Prospectos',c:'#0891b2',i:'🎯',sub:'cumplieron condiciones'},
-    {v:totalAltas,l:'Total Altas',c:'#7c3aed',i:'🏷️',sub:'Alta+Cap.+1er Pedido'},
-    {v:pedido,l:'Con 1er Pedido',c:'#d97706',i:'📦',sub:'primer compra realizada'},
-    {v:'$'+(monto/1000).toFixed(1)+'K',l:'Monto total',c:'#059669',i:'💰',sub:'acumulado'},
-    {v:'$'+ticket.toLocaleString('es-AR'),l:'Ticket promedio',c:'#1d4ed8',i:'📊',sub:'por pedido'},
-  ].map(k=>`<div class="kpi" style="--kc:${k.c}">
-    <div style="font-size:18px;margin-bottom:4px">${k.i}</div>
-    <div class="kpi-val">${k.v}</div>
-    <div class="kpi-lbl">${k.l}</div>
-    <div style="font-size:10px;color:var(--text3);margin-top:2px">${k.sub}</div>
-  </div>`).join('');
-
-  // Embudo
-  const maxV=Math.max(l.length,1);
-  const fEl=document.getElementById('ped-embudo');
-  if(fEl) fEl.innerHTML=[
-    {l:'Leads importados',v:l.length,c:'#3b82f6'},
-    {l:'Prospectos',v:prospectos,c:'#0891b2'},
-    {l:'Total altas de cliente',v:totalAltas,c:'#7c3aed'},
-    {l:'Con primer pedido',v:pedido,c:'#d97706'},
-  ].map(s=>`
-    <div style="margin-bottom:14px">
-      <div style="display:flex;justify-content:space-between;margin-bottom:5px">
-        <span style="font-size:13px;color:var(--text2)">${s.l}</span>
-        <span style="font-size:13px;font-weight:700;color:${s.c}">${s.v}</span>
-      </div>
-      <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
-        <div style="height:100%;width:${Math.round(s.v/maxV*100)}%;background:${s.c};border-radius:4px;transition:width .5s"></div>
-      </div>
-    </div>`).join('');
-
-  // Pedidos por semana
-  const semanas={};
-  l.filter(x=>x.estado==='Primer Pedido'&&x.fechaTraspaso).forEach(x=>{
-    const d=new Date(x.fechaTraspaso);
-    const sem=`Sem ${Math.ceil(d.getDate()/7)}`;
-    semanas[sem]=(semanas[sem]||0)+1;
-  });
-  const semKeys=Object.keys(semanas).sort();
-  if(window.chartPedSem) window.chartPedSem.destroy();
-  const cEl=document.getElementById('ch-ped-sem');
-  if(cEl&&semKeys.length){
-    window.chartPedSem=new Chart(cEl.getContext('2d'),{
-      type:'bar',
-      data:{labels:semKeys,datasets:[{data:semKeys.map(k=>semanas[k]),backgroundColor:'#10b98180',borderColor:'#10b981',borderWidth:2,borderRadius:6}]},
-      options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}},x:{grid:{display:false}}}}
-    });
+  // Renderizar filtros si no existen
+  const filtrosEl=document.getElementById('camp-filtros');
+  if(filtrosEl&&!filtrosEl.innerHTML){
+    filtrosEl.innerHTML=`
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="camp-filtro-nombre" placeholder="🔍 Buscar campaña..." oninput="renderCampanas()"
+          style="background:#fff;border:1px solid #dde3ec;border-radius:8px;padding:8px 12px;color:#0f172a;font-size:13px;outline:none;font-family:var(--sans);min-width:200px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:12px;color:#64748b">Desde:</span>
+          <input type="date" id="camp-filtro-desde" onchange="renderCampanas()"
+            style="background:#fff;border:1px solid #dde3ec;border-radius:8px;padding:7px 10px;color:#0f172a;font-size:12px;outline:none">
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:12px;color:#64748b">Hasta:</span>
+          <input type="date" id="camp-filtro-hasta" onchange="renderCampanas()"
+            style="background:#fff;border:1px solid #dde3ec;border-radius:8px;padding:7px 10px;color:#0f172a;font-size:12px;outline:none">
+        </div>
+        <button onclick="document.getElementById('camp-filtro-nombre').value='';document.getElementById('camp-filtro-desde').value='';document.getElementById('camp-filtro-hasta').value='';renderCampanas()"
+          style="background:#f1f5f9;border:1px solid #dde3ec;border-radius:8px;padding:7px 12px;color:#64748b;cursor:pointer;font-size:12px">
+          ✕ Limpiar
+        </button>
+      </div>`;
   }
 
-  // Tabla clientes con primer pedido
-  const pedidos=l.filter(x=>x.estado==='Primer Pedido');
-  const tEl=document.getElementById('ped-tabla');
-  if(tEl) tEl.innerHTML=pedidos.length?`
-    <table style="width:100%;border-collapse:collapse">
-      <thead><tr>${['Razón Social','CUIT','N° Cliente','Monto','Zona','Activador','Fecha'].map(h=>`<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)">${h}</th>`).join('')}</tr></thead>
-      <tbody>${pedidos.map(x=>{
-        const z=getZona(x.zonaId);const a=getActivador(x.activadorId);
-        return`<tr style="border-bottom:1px solid var(--border)">
-          <td style="padding:10px 12px;font-weight:600;font-size:13px">${x.nombre}</td>
-          <td style="padding:10px 12px;font-size:12px;color:var(--text2);font-family:var(--mono)">${x.cuit||'—'}</td>
-          <td style="padding:10px 12px;font-size:12px;color:#d97706;font-weight:700">${x.nroCliente||'—'}</td>
-          <td style="padding:10px 12px;font-size:13px;color:#059669;font-weight:700">${x.monto?'$'+Number(x.monto).toLocaleString('es-AR'):'—'}</td>
-          <td style="padding:10px 12px;font-size:12px;color:var(--text2)">${z.label||'—'}</td>
-          <td style="padding:10px 12px;font-size:12px;color:var(--text2)">${a.nombre||'—'}</td>
-          <td style="padding:10px 12px;font-size:12px;color:var(--text3)">${x.fechaTraspaso||'—'}</td>
-        </tr>`;}).join('')}
-      </tbody>
-    </table>
-  `:'<div style="text-align:center;padding:40px;color:var(--text3)">Sin clientes con primer pedido aún</div>';
+  // Filtrar leads por fecha
+  let leadsBase=l;
+  if(filtroFechaDesde) leadsBase=leadsBase.filter(x=>(x.fechaContacto||x.fechaAlta||'')>=filtroFechaDesde);
+  if(filtroFechaHasta) leadsBase=leadsBase.filter(x=>(x.fechaContacto||x.fechaAlta||'')<=filtroFechaHasta);
+
+  // Filtrar campañas por nombre
+  const campañasFiltradas=todasCampanas.filter(c=>!filtroNombre||c.toLowerCase().includes(filtroNombre));
+
+  // KPIs globales
+  const kEl=document.getElementById('camp-kpis');
+  if(kEl) kEl.innerHTML=[
+    {v:todasCampanas.length,l:'Campañas activas',c:'#1d4ed8'},
+    {v:leadsBase.length,l:'Total leads',c:'#0891b2'},
+    {v:leadsBase.filter(x=>x.estado==='Prospecto').length,l:'Prospectos',c:'#7c3aed'},
+    {v:leadsBase.filter(x=>['Alta de cliente','Capacitación','Primer Pedido'].includes(x.estado)).length,l:'Clientes',c:'#059669'},
+  ].map(k=>`<div class="kpi" style="--kc:${k.c}"><div class="kpi-val">${k.v}</div><div class="kpi-lbl">${k.l}</div></div>`).join('');
+
+  // Cards por campaña
+  const cols=['#1d4ed8','#0891b2','#7c3aed','#059669','#d97706','#e63946','#ec4899','#f59e0b'];
+  const cardsEl=document.getElementById('camp-cards');
+  if(cardsEl){
+    if(!campañasFiltradas.length){
+      cardsEl.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8">No hay campañas que coincidan con los filtros</div>';
+    } else {
+      cardsEl.innerHTML=campañasFiltradas.map((c,i)=>{
+        const ls=leadsBase.filter(x=>x.campana===c);
+        const prosp=ls.filter(x=>x.estado==='Prospecto').length;
+        const clientes=ls.filter(x=>['Alta de cliente','Capacitación','Primer Pedido'].includes(x.estado)).length;
+        const perdidos=ls.filter(x=>x.estado==='Perdido').length;
+        const conv=ls.length?Math.round(clientes/ls.length*100):0;
+        const color=cols[i%cols.length];
+        // Fecha más reciente
+        const fechas=ls.map(x=>x.fechaContacto||x.fechaAlta||'').filter(Boolean).sort();
+        const ultimaFecha=fechas[fechas.length-1]||'';
+        const primerFecha=fechas[0]||'';
+        return `<div style="background:#fff;border:1px solid #dde3ec;border-radius:14px;padding:18px;border-top:4px solid ${color}">
+          <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:14px">
+            <div style="width:36px;height:36px;border-radius:10px;background:${color}18;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📣</div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:14px;color:#0f172a">${c}</div>
+              ${primerFecha?`<div style="font-size:11px;color:#94a3b8;margin-top:2px">${primerFecha} → ${ultimaFecha}</div>`:''}
+            </div>
+            <div style="font-size:22px;font-weight:900;color:${color};font-family:var(--display)">${conv}%</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            ${[{v:ls.length,l:'Leads',c:'#64748b'},{v:prosp,l:'Prospectos',c:'#0891b2'},{v:clientes,l:'Clientes',c:'#059669'},{v:perdidos,l:'Perdidos',c:'#e63946'}]
+              .map(k=>`<div style="flex:1;min-width:55px;background:${k.c}10;border-radius:8px;padding:7px;text-align:center">
+                <div style="font-size:16px;font-weight:700;color:${k.c}">${k.v}</div>
+                <div style="font-size:10px;color:#94a3b8">${k.l}</div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
 }
 function triggerImportFile(){
   initImportInput();
@@ -2483,6 +2453,7 @@ function abrirDrawer(id){
         <div class="field"><div class="field-lbl">Email</div><div class="field-val" style="font-size:11px">${l.email||'—'}</div></div>
         <div class="field"><div class="field-lbl">Hunter</div><div class="field-val" style="color:${h.color||'#888'}">${h.nombre||'—'}</div></div>
         <div class="field"><div class="field-lbl">Zona</div><div class="field-val" style="color:${z.color||'#888'}">${z.label||'—'}</div></div>
+        <div class="field"><div class="field-lbl">Campaña</div><div class="field-val" style="color:#0891b2;font-weight:600">📣 ${l.campana||'—'}</div></div>
         <div class="field"><div class="field-lbl">Capacitaciones</div><div class="field-val" style="color:#f97316;font-family:var(--mono)">🎓 ${l.capacitaciones||0} sesiones</div></div>
         <div class="field"><div class="field-lbl">Activador</div><div class="field-val" style="color:${l.activadorId?'var(--teal)':'var(--text3)'}">${a.nombre||'Sin asignar'}</div></div>
         ${l.monto?`<div class="field"><div class="field-lbl">Monto</div><div class="field-val" style="color:#fbbf24;font-family:var(--mono)">$${l.monto.toLocaleString()}</div></div>`:''}
