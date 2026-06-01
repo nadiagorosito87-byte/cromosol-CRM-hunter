@@ -1592,7 +1592,7 @@ async function guardarLead(){
   let leadGuardar;
   if(editLeadId){
     const l=DB.leads.find(x=>x.id===editLeadId);
-    Object.assign(l,{nombre,cuit,wp:document.getElementById('lf-wp').value,rubro:document.getElementById('lf-rubro').value,contacto:document.getElementById('lf-contacto').value,email:document.getElementById('lf-email').value,obs:document.getElementById('lf-obs').value,monto:+document.getElementById('lf-monto').value||0,estado:document.getElementById('lf-estado').value,hunterId:document.getElementById('lf-hunter').value,zonaId:document.getElementById('lf-zona').value,activadorId:document.getElementById('lf-activador').value||null,motivo:document.getElementById('lf-motivo').value});
+    Object.assign(l,{nombre,cuit,wp:document.getElementById('lf-wp').value,rubro:document.getElementById('lf-rubro').value,contacto:document.getElementById('lf-contacto').value,email:document.getElementById('lf-email').value,obs:document.getElementById('lf-obs').value,monto:+document.getElementById('lf-monto').value||0,estado:document.getElementById('lf-estado').value,hunterId:document.getElementById('lf-hunter').value,zonaId:document.getElementById('lf-zona').value,activadorId:document.getElementById('lf-activador').value||null,motivo:document.getElementById('lf-motivo').value,campana:(document.getElementById('lf-campana')?.value?.trim()||l.campana||CAMPANAS[0])});
     l.historial.push({a:'Lead editado',d:'Datos actualizados',f:hoy()});
     leadGuardar=l;
     toast('Lead actualizado');
@@ -2520,6 +2520,118 @@ function abrirDrawer(id){
   document.getElementById('drawer-overlay').classList.add('open');
 }
 function cerrarDrawer(){document.getElementById('drawer-overlay').classList.remove('open');}
+// ════════════════════════════════════════════════
+// RENDER PERDIDAS
+// ════════════════════════════════════════════════
+function renderPerdidas(){
+  const l=DB.leads.filter(x=>x.estado==='Perdido');
+  const motivos={};
+  l.forEach(x=>{const m=x.motivo||'Sin motivo';motivos[m]=(motivos[m]||0)+1;});
+  const sorted=Object.entries(motivos).sort((a,b)=>b[1]-a[1]);
+  const cols=['#e63946','#f97316','#fbbf24','#8b5cf6','#3b82f6','#10b981'];
+
+  // Gráfico motivos
+  const mEl=document.getElementById('perd-motivos');
+  if(mEl) mEl.innerHTML=sorted.length?sorted.map(([m,n],i)=>`
+    <div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:13px;color:var(--text)">${m}</span>
+        <span style="font-size:13px;font-weight:700;color:${cols[i%cols.length]}">${n}</span>
+      </div>
+      <div style="height:7px;background:var(--border);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${Math.round(n/l.length*100)}%;background:${cols[i%cols.length]};border-radius:4px"></div>
+      </div>
+    </div>`).join(''):'<div style="color:var(--text3);font-size:13px;padding:20px">Sin pérdidas registradas</div>';
+
+  // Ranking motivos
+  const rEl=document.getElementById('perd-ranking');
+  if(rEl) rEl.innerHTML=sorted.length?`<table style="width:100%;border-collapse:collapse">
+    <thead><tr>${['Motivo','Cantidad','%'].map(h=>`<th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)">${h}</th>`).join('')}</tr></thead>
+    <tbody>${sorted.map(([m,n],i)=>`<tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:9px 12px;font-size:13px;color:var(--text)">${m}</td>
+      <td style="padding:9px 12px;font-size:13px;font-weight:700;color:${cols[i%cols.length]}">${n}</td>
+      <td style="padding:9px 12px;font-size:12px;color:var(--text2)">${Math.round(n/l.length*100)}%</td>
+    </tr>`).join('')}</tbody></table>`:'';
+
+  // Tabla leads perdidos
+  const tEl=document.getElementById('perd-tabla');
+  if(tEl) tEl.innerHTML=l.length?l.map(x=>{
+    const h=getHunter(x.hunterId);
+    return`<tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:9px 12px;font-size:13px;font-weight:600">${x.nombre}</td>
+      <td style="padding:9px 12px;font-size:12px;color:var(--text2);font-family:var(--mono)">${x.cuit||'—'}</td>
+      <td style="padding:9px 12px;font-size:12px;color:#e63946;font-weight:600">${x.motivo||'—'}</td>
+      <td style="padding:9px 12px;font-size:12px;color:var(--text2)">${h.nombre||'—'}</td>
+      <td style="padding:9px 12px;font-size:12px;color:var(--text3)">${x.fechaContacto||'—'}</td>
+    </tr>`;}).join(''):'<tr><td colspan="5" style="padding:30px;text-align:center;color:var(--text3)">Sin leads perdidos</td></tr>';
+}
+
+// ════════════════════════════════════════════════
+// RENDER PEDIDOS
+// ════════════════════════════════════════════════
+function renderPedidos(){
+  const l=DB.leads;
+  const prospectos=l.filter(x=>x.estado==='Prospecto').length;
+  const altas=l.filter(x=>x.estado==='Alta de cliente').length;
+  const capacitacion=l.filter(x=>x.estado==='Capacitación').length;
+  const pedido=l.filter(x=>x.estado==='Primer Pedido').length;
+  const totalAltas=altas+capacitacion+pedido;
+  const monto=l.reduce((a,x)=>a+(+x.monto||0),0);
+  const ticket=pedido?Math.round(monto/pedido):0;
+
+  const kEl=document.getElementById('ped-kpis');
+  if(kEl) kEl.innerHTML=[
+    {v:prospectos,l:'Prospectos',c:'#0891b2',i:'🎯',sub:'cumplieron condiciones'},
+    {v:totalAltas,l:'Total Altas',c:'#7c3aed',i:'🏷️',sub:'Alta+Cap.+1er Pedido'},
+    {v:pedido,l:'Con 1er Pedido',c:'#d97706',i:'📦',sub:'primer compra realizada'},
+    {v:'$'+(monto/1000).toFixed(1)+'K',l:'Monto total',c:'#059669',i:'💰',sub:'acumulado'},
+    {v:'$'+ticket.toLocaleString('es-AR'),l:'Ticket promedio',c:'#1d4ed8',i:'📊',sub:'por pedido'},
+  ].map(k=>`<div class="kpi" style="--kc:${k.c}">
+    <div style="font-size:18px;margin-bottom:4px">${k.i}</div>
+    <div class="kpi-val">${k.v}</div>
+    <div class="kpi-lbl">${k.l}</div>
+    <div style="font-size:10px;color:var(--text3);margin-top:2px">${k.sub}</div>
+  </div>`).join('');
+
+  const maxV=Math.max(l.length,1);
+  const fEl=document.getElementById('ped-embudo');
+  if(fEl) fEl.innerHTML=[
+    {l:'Leads importados',v:l.length,c:'#3b82f6'},
+    {l:'Prospectos',v:prospectos,c:'#0891b2'},
+    {l:'Total altas de cliente',v:totalAltas,c:'#7c3aed'},
+    {l:'Con primer pedido',v:pedido,c:'#d97706'},
+  ].map(s=>`
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+        <span style="font-size:13px;color:var(--text2)">${s.l}</span>
+        <span style="font-size:13px;font-weight:700;color:${s.c}">${s.v}</span>
+      </div>
+      <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${Math.round(s.v/maxV*100)}%;background:${s.c};border-radius:4px"></div>
+      </div>
+    </div>`).join('');
+
+  const pedidos=l.filter(x=>x.estado==='Primer Pedido');
+  const tEl=document.getElementById('ped-tabla');
+  if(tEl) tEl.innerHTML=pedidos.length?`
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr>${['Razón Social','CUIT','N° Cliente','Monto','Zona','Activador','Fecha'].map(h=>`<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)">${h}</th>`).join('')}</tr></thead>
+      <tbody>${pedidos.map(x=>{
+        const z=getZona(x.zonaId);const a=getActivador(x.activadorId);
+        return`<tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:10px 12px;font-weight:600;font-size:13px">${x.nombre}</td>
+          <td style="padding:10px 12px;font-size:12px;color:var(--text2);font-family:var(--mono)">${x.cuit||'—'}</td>
+          <td style="padding:10px 12px;font-size:12px;color:#d97706;font-weight:700">${x.nroCliente||'—'}</td>
+          <td style="padding:10px 12px;font-size:13px;color:#059669;font-weight:700">${x.monto?'$'+Number(x.monto).toLocaleString('es-AR'):'—'}</td>
+          <td style="padding:10px 12px;font-size:12px;color:var(--text2)">${z.label||'—'}</td>
+          <td style="padding:10px 12px;font-size:12px;color:var(--text2)">${a.nombre||'—'}</td>
+          <td style="padding:10px 12px;font-size:12px;color:var(--text3)">${x.fechaTraspaso||'—'}</td>
+        </tr>`;}).join('')}
+      </tbody>
+    </table>
+  `:'<div style="text-align:center;padding:40px;color:var(--text3)">Sin clientes con primer pedido aún</div>';
+}
+
 loadDB();
 </script>
 
