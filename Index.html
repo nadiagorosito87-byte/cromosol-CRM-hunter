@@ -380,7 +380,7 @@ tr:hover td{background:#ffffff04;}
       <div class="panel">
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Razón Social</th><th>CUIT</th><th>Campaña</th><th>Estado</th><th>Hunter</th><th>Zona</th><th>Activador</th><th>Provincia</th><th>Localidad</th><th>Último contacto</th><th>Acciones</th></tr></thead>
+            <thead><tr><th>Razón Social</th><th>CUIT</th><th>N° Cliente</th><th>Campaña</th><th>Estado</th><th>Hunter</th><th>Zona</th><th>Activador</th><th>Provincia</th><th>Localidad</th><th>Último contacto</th><th>Acciones</th></tr></thead>
             <tbody id="tbody-leads"></tbody>
           </table>
         </div>
@@ -1015,23 +1015,30 @@ const CHO={
 // ════════════════════════════════════════════════
 function renderDashboard(){
   const l=DB.leads;
-  const activ=l.filter(x=>x.estado==='Activado').length;
-  const listos=l.filter(x=>x.estado==='Listo para activar').length;
-  const perdidos=l.filter(x=>x.estado==='Perdido').length;
-  const sinG=l.filter(x=>x.estado==='Sin gestionar').length;
+  const total=l.length;
+  // Estados reales del pipeline
   const contactados=l.filter(x=>x.estado==='Contactado').length;
   const prospectos=l.filter(x=>x.estado==='Prospecto').length;
   const altas=l.filter(x=>x.estado==='Alta de cliente').length;
   const capacitacion=l.filter(x=>x.estado==='Capacitación').length;
   const primerPedido=l.filter(x=>x.estado==='Primer Pedido').length;
   const perdidosCount=l.filter(x=>x.estado==='Perdido').length;
+  const sinG=l.filter(x=>x.estado==='Sin gestionar').length;
   const totalInteracciones=l.reduce((acc,x)=>acc+(x.historial?.length||0),0);
   const conInteraccion=l.filter(x=>(x.historial?.length||0)>1).length;
-  // Conversiones
-  const convProspecto=l.length?Math.round(prospectos/l.length*100):0;
-  const convAlta=prospectos?Math.round(altas/prospectos*100):0;
-  const convPedido=altas?Math.round(primerPedido/altas*100):0;
   const monto=l.reduce((s,x)=>s+x.monto,0);
+
+  // ─── Conversiones con lógica acumulada correcta ───────────────────────────
+  // "Leads → Prospectos": cuántos leads pasaron a Prospecto o más
+  const pasaronAProspecto=l.filter(x=>['Prospecto','Alta de cliente','Capacitación','Primer Pedido'].includes(x.estado)).length;
+  // "Prospectos → Alta de cliente": cuántos de los que llegaron a prospecto+ pasaron a Alta+
+  const pasaronAAlta=l.filter(x=>['Alta de cliente','Capacitación','Primer Pedido'].includes(x.estado)).length;
+  // "Alta → Primer Pedido": cuántos de los que llegaron a Alta+ hicieron primer pedido
+  const pasaronAPedido=primerPedido;
+
+  const convProspecto=total?Math.round(pasaronAProspecto/total*100):0;
+  const convAlta=pasaronAProspecto?Math.round(pasaronAAlta/pasaronAProspecto*100):0;
+  const convPedido=pasaronAAlta?Math.round(pasaronAPedido/pasaronAAlta*100):0;
 
   updateBadges();
   const dtl=document.getElementById('dash-total-leads');
@@ -1056,28 +1063,27 @@ function renderDashboard(){
       <div style="background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:16px;text-align:center;border-top:3px solid #0891b2">
         <div style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Leads → Prospectos</div>
         <div style="font-size:36px;font-weight:900;color:#0891b2;font-family:var(--display)">${convProspecto}%</div>
-        <div style="font-size:12px;color:#475569;margin-top:4px">${l.length} leads → ${prospectos} prospectos</div>
+        <div style="font-size:12px;color:#475569;margin-top:4px">${total} leads → ${pasaronAProspecto} prospectos</div>
       </div>
       <div style="background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:16px;text-align:center;border-top:3px solid #7c3aed">
         <div style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Prospectos → Alta</div>
         <div style="font-size:36px;font-weight:900;color:#7c3aed;font-family:var(--display)">${convAlta}%</div>
-        <div style="font-size:12px;color:#475569;margin-top:4px">${prospectos} prospectos → ${altas} altas</div>
+        <div style="font-size:12px;color:#475569;margin-top:4px">${pasaronAProspecto} prospectos → ${pasaronAAlta} altas</div>
       </div>
       <div style="background:#fff;border:1px solid #dde3ec;border-radius:12px;padding:16px;text-align:center;border-top:3px solid #d97706">
         <div style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Alta → Primer Pedido</div>
         <div style="font-size:36px;font-weight:900;color:#d97706;font-family:var(--display)">${convPedido}%</div>
-        <div style="font-size:12px;color:#475569;margin-top:4px">${altas} altas → ${primerPedido} pedidos</div>
+        <div style="font-size:12px;color:#475569;margin-top:4px">${pasaronAAlta} altas → ${pasaronAPedido} pedidos</div>
       </div>
     </div>`;
 
-  // Flujo visual
-  const total=l.length||1;
+  // Flujo visual con estados reales del pipeline
   const steps=[
-    {icon:'📥',label:'Base importada',val:l.length,c:'#3b82f6'},
-    {icon:'📞',label:'Contactados',val:l.filter(x=>x.estado!=='Sin gestionar').length,c:'#8b5cf6'},
-    {icon:'🎓',label:'Capacitados',val:l.filter(x=>['En capacitación','Listo para activar','Activado'].includes(x.estado)).length,c:'#f97316'},
-    {icon:'✅',label:'Listos',val:listos,c:'#06b6d4'},
-    {icon:'⚡',label:'Activados',val:activ,c:'#10b981'},
+    {icon:'📥',label:'Base importada',val:total,c:'#3b82f6'},
+    {icon:'📞',label:'Contactados',val:l.filter(x=>x.estado!=='Sin gestionar'&&x.estado!=='Perdido').length,c:'#8b5cf6'},
+    {icon:'🎯',label:'Prospectos',val:pasaronAProspecto,c:'#0891b2'},
+    {icon:'🏷️',label:'Alta/Capacit.',val:pasaronAAlta,c:'#7c3aed'},
+    {icon:'📦',label:'Primer Pedido',val:primerPedido,c:'#f59e0b'},
   ];
   document.getElementById('flow-track').innerHTML=steps.map((s,i)=>`
     ${i>0?`<div class="flow-arrow">→</div>`:''}
@@ -1102,7 +1108,7 @@ function renderDashboard(){
   // Chart traspasos semana
   if(document.getElementById('ch-semana')){
     dc('ch-semana');
-    const sw=[{s:'Sem 1',v:2},{s:'Sem 2',v:4},{s:'Sem 3',v:3},{s:'Sem 4',v:6},{s:'Sem 5',v:5},{s:'Sem 6',v:listos+activ}];
+    const sw=[{s:'Sem 1',v:2},{s:'Sem 2',v:4},{s:'Sem 3',v:3},{s:'Sem 4',v:6},{s:'Sem 5',v:5},{s:'Sem 6',v:primerPedido}];
     charts['ch-semana']=new Chart(document.getElementById('ch-semana'),{
       type:'bar',
       data:{labels:sw.map(x=>x.s),datasets:[{label:'Traspasos',data:sw.map(x=>x.v),backgroundColor:'#06b6d488',borderRadius:5}]},
@@ -1115,21 +1121,22 @@ function renderDashboard(){
   DB.hunters.forEach(h=>{
     const ls=l.filter(x=>x.hunterId===h.id);
     const sg=ls.filter(x=>x.estado==='Sin gestionar').length;
-    const ta=ls.length?+(ls.filter(x=>x.estado==='Activado').length/ls.length*100).toFixed(1):0;
+    const conv=ls.length?+(ls.filter(x=>x.estado==='Primer Pedido').length/ls.length*100).toFixed(1):0;
     if(sg>=4) alertas.push({c:'al-red',msg:`<strong>${h.nombre}</strong> tiene <strong>${sg}</strong> leads sin gestionar`});
-    if(ta<10&&ls.length>=5) alertas.push({c:'al-yellow',msg:`<strong>${h.nombre}</strong> tiene tasa de activación baja: <strong>${ta}%</strong>`});
+    if(conv<10&&ls.length>=5) alertas.push({c:'al-yellow',msg:`<strong>${h.nombre}</strong> tiene conversión a primer pedido baja: <strong>${conv}%</strong>`});
   });
-  if(listos>0) alertas.push({c:'al-teal',msg:`<strong>${listos} leads</strong> están listos para ser traspasados a un Activador`});
+  if(primerPedido>0) alertas.push({c:'al-teal',msg:`<strong>${primerPedido} leads</strong> completaron su primer pedido 🎉`});
   if(!alertas.length) alertas.push({c:'al-green',msg:'✅ Todo en orden — Sin alertas activas'});
   document.getElementById('dash-alertas').innerHTML=alertas.map(a=>`<div class="alert-card ${a.c}">${a.msg}</div>`).join('');
 
-  // Ranking
+  // Ranking hunters — usando estados reales del pipeline
   const ranked=DB.hunters.map(h=>{
     const ls=l.filter(x=>x.hunterId===h.id);
-    const a=ls.filter(x=>x.estado==='Activado').length;
-    const t=ls.length?+(a/ls.length*100).toFixed(1):0;
-    const trasp=ls.filter(x=>x.activadorId).length;
-    return{...h,leads:ls.length,activ:a,tasa:t,trasp};
+    const pedidos=ls.filter(x=>x.estado==='Primer Pedido').length;
+    const altasH=ls.filter(x=>['Alta de cliente','Capacitación','Primer Pedido'].includes(x.estado)).length;
+    const t=ls.length?+(pedidos/ls.length*100).toFixed(1):0;
+    const caps=ls.filter(x=>x.estado==='Capacitación').length;
+    return{...h,leads:ls.length,pedidos,altasH,tasa:t,caps};
   }).sort((a,b)=>b.tasa-a.tasa);
   document.getElementById('dash-ranking').innerHTML=ranked.map((h,i)=>`
     <div class="rank-item">
@@ -1137,9 +1144,9 @@ function renderDashboard(){
       <div class="rank-ava" style="background:${h.color}33;color:${h.color}">${ini(h.nombre)}</div>
       <div class="rank-info"><div class="rank-name">${h.nombre}</div><div class="rank-sub">${DB.zonas.filter(z=>z.hunterId===h.id).map(z=>z.label).join(' · ')||'Sin zonas'}</div></div>
       <div class="rank-stats">
-        <div><div class="rs-v" style="color:${h.color}">${h.tasa}%</div><div class="rs-l">Activ.</div></div>
-        <div><div class="rs-v" style="color:#06b6d4">${h.trasp}</div><div class="rs-l">Trasp.</div></div>
-        <div><div class="rs-v" style="color:#10b981">${h.activ}</div><div class="rs-l">Alta</div></div>
+        <div><div class="rs-v" style="color:${h.color}">${h.tasa}%</div><div class="rs-l">Conv.</div></div>
+        <div><div class="rs-v" style="color:#7c3aed">${h.altasH}</div><div class="rs-l">Altas</div></div>
+        <div><div class="rs-v" style="color:#f59e0b">${h.pedidos}</div><div class="rs-l">Pedidos</div></div>
       </div>
     </div>`).join('');
 }
@@ -1177,6 +1184,7 @@ function renderLeads(){
     return`<tr>
       <td><div style="font-weight:700">${l.nombre}</div><div style="font-size:10px;color:var(--text3)">${l.rubro||''}${l.contacto?' · '+l.contacto:''}</div></td>
       <td style="font-family:var(--mono);font-size:11px;color:var(--text3)">${fmtCuit(l.cuit)||'—'}</td>
+      <td style="font-family:var(--mono);font-size:11px;font-weight:700;color:#7c3aed">${l.nroCliente||'<span style="color:var(--text3);font-weight:400">—</span>'}</td>
       <td style="font-size:11px;color:#0891b2;font-weight:600;white-space:nowrap">${l.campana?'📣 '+l.campana.substring(0,20)+(l.campana.length>20?'…':''):'—'}</td>
       <td><span class="pill ${EST_CLASS[l.estado]||'p-new'}">${l.estado}</span></td>
       <td><span style="color:${h.color||'#888'};font-size:12px;font-weight:600">${h.nombre||'—'}</span></td>
@@ -2045,6 +2053,7 @@ function exportarExcel(){
     'Hunter':getHunter(l.hunterId).nombre||'',
     'Activador':getActivador(l.activadorId).nombre||'',
     'Capacitaciones':l.capacitaciones||0,
+    'N° Cliente':l.nroCliente||'','N° Factura':l.nroFactura||'',
     'Fecha contacto':l.fechaContacto,'Fecha traspaso':l.fechaTraspaso,
     'Monto':l.monto,'Motivo pérdida':l.motivo,'Observaciones':l.obs
   }));
